@@ -149,6 +149,7 @@ const Register: React.FC = () => {
 
       // SUCCESS! Show success screen
       setSuccess(true);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error("Registration error:", err);
       if (err.code === "auth/email-already-in-use") {
