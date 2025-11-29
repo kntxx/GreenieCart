@@ -1,0 +1,34 @@
+name: Quality Check
+
+on:
+  push:
+    branches: [ "main" ] # Only run on main push to save minutes
+  pull_request:
+    branches: [ "main" ] # Run on every PR targeting main
+
+jobs:
+  quality_check:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # 1. Get the code
+      - uses: actions/checkout@v4
+
+      # 2. Setup Node environment
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      # 3. Clean Install (Faster & Safer than npm install)
+      - name: Install Dependencies
+        run: npm install
+
+      # 4. Check for messy code
+      - name: Lint Code
+        run: npm run lint
+
+      # 5. Check if it actually compiles (Crucial for Vite/React)
+      - name: Build Test
+        run: npm run build
