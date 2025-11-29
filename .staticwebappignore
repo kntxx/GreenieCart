@@ -11,7 +11,7 @@ vite.config.ts
 eslint.config.js
 
 # Development files
-.env
+
 .env.example
 .env.local
 *.log
