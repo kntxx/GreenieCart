@@ -7,7 +7,6 @@ import {
   FaBars,
   FaAngleDown,
   FaAngleUp,
-  FaTrash,
   FaTimes,
   FaTruck,
   FaCreditCard,
