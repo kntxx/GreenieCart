@@ -1,0 +1,393 @@
+/* ============================================
+   iOS 16/17/18 INSPIRED DESIGN SYSTEM
+   GreenieCart - Apple Human Interface Guidelines
+   ============================================ */
+
+/* ---------- iOS Design Tokens ---------- */
+:root {
+  /* iOS Colors */
+  --ios-green: #34c759;
+  --ios-green-light: #e9fdf1;
+  --ios-green-dark: #248a3d;
+  --ios-blue: #0a84ff;
+  --ios-blue-light: #e5f2ff;
+  --ios-red: #ff3b30;
+  --ios-orange: #ff9500;
+  --ios-yellow: #ffcc00;
+  --ios-purple: #af52de;
+  --ios-pink: #ff2d55;
+  --ios-teal: #5ac8fa;
+
+  /* iOS Neutrals */
+  --ios-bg: #f2f4f7;
+  --ios-bg-secondary: #ffffff;
+  --ios-card: rgba(255, 255, 255, 0.85);
+  --ios-card-solid: #ffffff;
+  --ios-frosted: rgba(255, 255, 255, 0.72);
+  --ios-frosted-dark: rgba(30, 30, 30, 0.75);
+
+  /* iOS Text */
+  --ios-text-primary: #1c1c1e;
+  --ios-text-secondary: #8e8e93;
+  --ios-text-tertiary: #aeaeb2;
+  --ios-text-white: #ffffff;
+
+  /* iOS Shadows */
+  --ios-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --ios-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --ios-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --ios-shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.16);
+  --ios-shadow-card: 0 2px 8px rgba(0, 0, 0, 0.04),
+    0 8px 24px rgba(0, 0, 0, 0.08);
+
+  /* iOS Borders */
+  --ios-border: rgba(0, 0, 0, 0.06);
+  --ios-border-light: rgba(255, 255, 255, 0.2);
+
+  /* iOS Radius */
+  --ios-radius-sm: 8px;
+  --ios-radius-md: 12px;
+  --ios-radius-lg: 16px;
+  --ios-radius-xl: 20px;
+  --ios-radius-2xl: 24px;
+  --ios-radius-full: 9999px;
+
+  /* iOS Blur */
+  --ios-blur: blur(20px);
+  --ios-blur-lg: blur(40px);
+
+  /* iOS Transitions */
+  --ios-transition: all 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ios-transition-fast: all 0.15s cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ios-transition-slow: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ios-spring: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* iOS Spacing */
+  --ios-space-xs: 4px;
+  --ios-space-sm: 8px;
+  --ios-space-md: 16px;
+  --ios-space-lg: 24px;
+  --ios-space-xl: 32px;
+  --ios-space-2xl: 48px;
+}
+
+/* ---------- iOS Typography ---------- */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+
+* {
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+    "SF Pro Text", "Inter", "Segoe UI", Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--ios-text-primary);
+  background: var(--ios-bg);
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* ---------- iOS Button Styles ---------- */
+.ios-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: var(--ios-radius-full);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--ios-transition);
+  box-shadow: var(--ios-shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.ios-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0);
+  transition: var(--ios-transition-fast);
+}
+
+.ios-btn:hover::after {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.ios-btn:active {
+  transform: scale(0.97);
+}
+
+.ios-btn-primary {
+  background: var(--ios-green);
+  color: white;
+}
+
+.ios-btn-primary:hover {
+  background: var(--ios-green-dark);
+  box-shadow: var(--ios-shadow-md);
+}
+
+.ios-btn-secondary {
+  background: var(--ios-blue);
+  color: white;
+}
+
+.ios-btn-secondary:hover {
+  background: #0070e0;
+  box-shadow: var(--ios-shadow-md);
+}
+
+.ios-btn-danger {
+  background: var(--ios-red);
+  color: white;
+}
+
+.ios-btn-danger:hover {
+  background: #e0352b;
+  box-shadow: var(--ios-shadow-md);
+}
+
+.ios-btn-ghost {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--ios-text-primary);
+  box-shadow: none;
+}
+
+.ios-btn-ghost:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+/* ---------- iOS Card Styles ---------- */
+.ios-card {
+  background: var(--ios-card);
+  backdrop-filter: var(--ios-blur);
+  -webkit-backdrop-filter: var(--ios-blur);
+  border-radius: var(--ios-radius-xl);
+  border: 1px solid var(--ios-border);
+  box-shadow: var(--ios-shadow-card);
+  transition: var(--ios-transition);
+}
+
+.ios-card:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: var(--ios-shadow-lg);
+}
+
+/* ---------- iOS Input Styles ---------- */
+.ios-input {
+  width: 100%;
+  padding: 14px 18px;
+  border: 1px solid var(--ios-border);
+  border-radius: var(--ios-radius-lg);
+  background: var(--ios-frosted);
+  backdrop-filter: var(--ios-blur);
+  -webkit-backdrop-filter: var(--ios-blur);
+  font-size: 16px;
+  color: var(--ios-text-primary);
+  transition: var(--ios-transition);
+  outline: none;
+}
+
+.ios-input:focus {
+  border-color: var(--ios-green);
+  box-shadow: 0 0 0 4px rgba(52, 199, 89, 0.15);
+  transform: scale(1.01);
+}
+
+.ios-input::placeholder {
+  color: var(--ios-text-tertiary);
+}
+
+/* ---------- iOS Search Bar ---------- */
+.ios-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: rgba(142, 142, 147, 0.12);
+  border-radius: var(--ios-radius-full);
+  transition: var(--ios-transition);
+  border: 1px solid transparent;
+}
+
+.ios-search:focus-within {
+  background: var(--ios-frosted);
+  backdrop-filter: var(--ios-blur);
+  -webkit-backdrop-filter: var(--ios-blur);
+  border-color: var(--ios-green);
+  box-shadow: 0 0 0 4px rgba(52, 199, 89, 0.1);
+  transform: scaleX(1.02);
+}
+
+.ios-search input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 16px;
+  color: var(--ios-text-primary);
+  outline: none;
+}
+
+.ios-search input::placeholder {
+  color: var(--ios-text-tertiary);
+}
+
+.ios-search svg {
+  color: var(--ios-text-secondary);
+  flex-shrink: 0;
+}
+
+/* ---------- iOS Animations ---------- */
+@keyframes ios-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ios-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes ios-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ios-spring-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  60% {
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.ios-animate-fade {
+  animation: ios-fade-in 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+}
+
+.ios-animate-scale {
+  animation: ios-scale-in 0.3s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+}
+
+.ios-animate-slide {
+  animation: ios-slide-up 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+}
+
+.ios-animate-spring {
+  animation: ios-spring-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* ---------- iOS Glassmorphism Panel ---------- */
+.ios-glass {
+  background: var(--ios-frosted);
+  backdrop-filter: var(--ios-blur);
+  -webkit-backdrop-filter: var(--ios-blur);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.ios-glass-dark {
+  background: var(--ios-frosted-dark);
+  backdrop-filter: var(--ios-blur);
+  -webkit-backdrop-filter: var(--ios-blur);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ---------- iOS Pill Badge ---------- */
+.ios-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  border-radius: var(--ios-radius-full);
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--ios-green);
+  color: white;
+}
+
+.ios-badge-secondary {
+  background: var(--ios-blue);
+}
+
+.ios-badge-danger {
+  background: var(--ios-red);
+}
+
+/* ---------- iOS Divider ---------- */
+.ios-divider {
+  height: 1px;
+  background: var(--ios-border);
+  margin: var(--ios-space-md) 0;
+}
+
+/* ---------- iOS List Item ---------- */
+.ios-list-item {
+  display: flex;
+  align-items: center;
+  padding: 14px 16px;
+  background: var(--ios-card-solid);
+  border-bottom: 1px solid var(--ios-border);
+  transition: var(--ios-transition-fast);
+  cursor: pointer;
+}
+
+.ios-list-item:hover {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.ios-list-item:active {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* ---------- Scrollbar iOS Style ---------- */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: var(--ios-radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
+}

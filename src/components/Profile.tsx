@@ -27,6 +27,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { auth, db } from "./firebase";
+import CountUp from "./CountUp";
 import "../assets/Profile.css";
 import { IconContext } from "react-icons";
 
@@ -494,7 +495,6 @@ const Profile: React.FC = () => {
                       <label>Email</label>
                       <p>{userData.email || "—"}</p>
                     </div>
-                   
                   </div>
                 )}
               </div>
@@ -502,41 +502,82 @@ const Profile: React.FC = () => {
 
             {/* Stats Cards */}
             <div className="profile-stats">
-              <div className="stats-card">
-                <span className="stats-icon">
+              <div className="stats-card products-card">
+                <div className="stats-icon-wrapper">
                   <FaBoxOpen />
-                </span>
-                <h3>My Products</h3>
-                <p>{totalProducts}</p>
+                </div>
+                <div className="stats-content">
+                  <h3>My Products</h3>
+                  <p>
+                    <CountUp
+                      to={totalProducts}
+                      from={0}
+                      duration={2}
+                      separator=","
+                      className="count-value"
+                    />
+                  </p>
+                </div>
               </div>
 
-              <div className="stats-card">
-                <span className="stats-icon">
+              <div className="stats-card orders-card">
+                <div className="stats-icon-wrapper">
                   <FaShoppingCart />
-                </span>
-                <h3>My Orders</h3>
-                <p>{totalOrders}</p>
+                </div>
+                <div className="stats-content">
+                  <h3>My Orders</h3>
+                  <p>
+                    <CountUp
+                      to={totalOrders}
+                      from={0}
+                      duration={2}
+                      separator=","
+                      className="count-value"
+                    />
+                  </p>
+                </div>
               </div>
 
-              <div className="stats-card">
-                <span className="stats-icon">
+              <div className="stats-card spent-card">
+                <div className="stats-icon-wrapper">
                   <FaDollarSign />
-                </span>
-                <h3>Total Spent</h3>
-                <p>₱{totalSpent.toLocaleString()}</p>
+                </div>
+                <div className="stats-content">
+                  <h3>Total Spent</h3>
+                  <p>
+                    ₱
+                    <CountUp
+                      to={totalSpent}
+                      from={0}
+                      duration={2.5}
+                      separator=","
+                      className="count-value"
+                    />
+                  </p>
+                </div>
               </div>
 
-              <div className="stats-card">
-                <span className="stats-icon">
+              <div className="stats-card avg-card">
+                <div className="stats-icon-wrapper">
                   <FaChartLine />
-                </span>
-                <h3>Avg. Order</h3>
-                <p>
-                  ₱
-                  {totalOrders > 0
-                    ? (totalSpent / totalOrders).toFixed(2)
-                    : "0.00"}
-                </p>
+                </div>
+                <div className="stats-content">
+                  <h3>Avg. Order</h3>
+                  <p>
+                    ₱
+                    <CountUp
+                      to={
+                        totalOrders > 0
+                          ? Math.round((totalSpent / totalOrders) * 100) / 100
+                          : 0
+                      }
+                      from={0}
+                      duration={2.5}
+                      separator=","
+                      className="count-value"
+                    />
+                  </p>
+                </div>
               </div>
             </div>
 

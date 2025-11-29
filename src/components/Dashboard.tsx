@@ -11,6 +11,10 @@ import {
   FaPlus,
   FaEdit,
   FaTrash,
+  FaCheckCircle,
+  FaExclamationCircle,
+  FaInfoCircle,
+  FaTimes,
 } from "react-icons/fa";
 import { IconContext } from "react-icons";
 import {
@@ -43,6 +47,14 @@ interface CartItem {
   image: string;
 }
 
+// Popup types
+interface PopupState {
+  show: boolean;
+  type: "success" | "error" | "info" | "confirm";
+  message: string;
+  onConfirm?: () => void;
+}
+
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -52,6 +64,24 @@ const Dashboard: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [addingToCart, setAddingToCart] = useState<string | null>(null);
   const [cartCount, setCartCount] = useState(0);
+  const [popup, setPopup] = useState<PopupState>({
+    show: false,
+    type: "info",
+    message: "",
+  });
+
+  // Show popup helper
+  const showPopup = (
+    type: PopupState["type"],
+    message: string,
+    onConfirm?: () => void
+  ) => {
+    setPopup({ show: true, type, message, onConfirm });
+  };
+
+  const closePopup = () => {
+    setPopup({ ...popup, show: false });
+  };
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const closeSidebar = () => setSidebarOpen(false);
@@ -118,19 +148,19 @@ const Dashboard: React.FC = () => {
   const handleAddToCart = async (product: Product) => {
     const user = auth.currentUser;
     if (!user) {
-      alert("Please log in to add items to cart.");
-      navigate("/login");
+      showPopup("error", "Please log in to add items to cart.");
+      setTimeout(() => navigate("/login"), 1500);
       return;
     }
 
     // Prevent buying own product
     if (product.createdBy === user.uid) {
-      alert("You cannot buy your own product.");
+      showPopup("error", "You cannot buy your own product.");
       return;
     }
 
     if (product.stock <= 0) {
-      alert("This product is out of stock.");
+      showPopup("error", "This product is out of stock.");
       return;
     }
 
@@ -143,7 +173,7 @@ const Dashboard: React.FC = () => {
       const querySnapshot = await getDocs(q);
 
       if (!querySnapshot.empty) {
-        alert("This item is already in your cart!");
+        showPopup("info", "This item is already in your cart!");
         setAddingToCart(null);
         return;
       }
@@ -158,10 +188,10 @@ const Dashboard: React.FC = () => {
       };
 
       await addDoc(cartRef, cartItem);
-      alert(`${product.name} added to cart!`);
+      showPopup("success", `${product.name} added to cart!`);
     } catch (error) {
       console.error("Error adding to cart:", error);
-      alert("Failed to add item to cart.");
+      showPopup("error", "Failed to add item to cart.");
     } finally {
       setAddingToCart(null);
     }
@@ -175,19 +205,20 @@ const Dashboard: React.FC = () => {
     const user = auth.currentUser;
     if (!user) return;
 
-    const confirmDelete = window.confirm(
-      `Are you sure you want to delete "${productName}"?`
+    showPopup(
+      "confirm",
+      `Are you sure you want to delete "${productName}"?`,
+      async () => {
+        try {
+          await deleteDoc(doc(db, "products", productId));
+          setProducts(products.filter((p) => p.id !== productId));
+          showPopup("success", "Product deleted successfully!");
+        } catch (error) {
+          console.error("Error deleting product:", error);
+          showPopup("error", "Failed to delete product.");
+        }
+      }
     );
-    if (!confirmDelete) return;
-
-    try {
-      await deleteDoc(doc(db, "products", productId));
-      setProducts(products.filter((p) => p.id !== productId));
-      alert("Product deleted successfully!");
-    } catch (error) {
-      console.error("Error deleting product:", error);
-      alert("Failed to delete product.");
-    }
   };
 
   // Filter products based on search term
@@ -195,8 +226,55 @@ const Dashboard: React.FC = () => {
     (p) => p.name && p.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Separate user's products from other products
+  const myProducts = filteredProducts.filter((p) => isOwnProduct(p));
+  const otherProducts = filteredProducts.filter((p) => !isOwnProduct(p));
+
   return (
     <div className="dashboard">
+      {/* Popup Modal */}
+      {popup.show && (
+        <div className="popup-overlay" onClick={closePopup}>
+          <div className="popup-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="popup-close" onClick={closePopup}>
+              <FaTimes />
+            </button>
+            <div className={`popup-icon popup-icon-${popup.type}`}>
+              {popup.type === "success" && <FaCheckCircle />}
+              {popup.type === "error" && <FaExclamationCircle />}
+              {popup.type === "info" && <FaInfoCircle />}
+              {popup.type === "confirm" && <FaExclamationCircle />}
+            </div>
+            <p className="popup-message">{popup.message}</p>
+            <div className="popup-actions">
+              {popup.type === "confirm" ? (
+                <>
+                  <button
+                    className="popup-btn popup-btn-cancel"
+                    onClick={closePopup}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="popup-btn popup-btn-confirm"
+                    onClick={() => {
+                      if (popup.onConfirm) popup.onConfirm();
+                      closePopup();
+                    }}
+                  >
+                    Delete
+                  </button>
+                </>
+              ) : (
+                <button className="popup-btn popup-btn-ok" onClick={closePopup}>
+                  OK
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Sidebar Overlay */}
       <div
         className={`sidebar-overlay ${sidebarOpen ? "show" : ""}`}
@@ -309,7 +387,7 @@ const Dashboard: React.FC = () => {
             </div>
           </header>
 
-          {/* Product grid */}
+          {/* Product Sections */}
           <section className="marketplace">
             {loading ? (
               <div className="loading-message">Loading products...</div>
@@ -320,61 +398,139 @@ const Dashboard: React.FC = () => {
                   : "No products available. Add your first product!"}
               </div>
             ) : (
-              <div className="marketplace-grid">
-                {filteredProducts.map((p) => (
-                  <div key={p.id} className="marketplace-card">
-                    <div className="product-image">
-                      <img src={p.image} alt={p.name} />
-                    </div>
-                    <h3>{p.name}</h3>
-
-                    <div className="product-info">
-                      <span>₱{p.price.toLocaleString()}</span>
-                      <span>Stock: {p.stock}</span>
-                    </div>
-
-                    <div className="product-actions">
-                      {isOwnProduct(p) ? (
-                        <div className="own-product-actions">
-                          <button
-                            className="edit-btn"
-                            onClick={() => navigate(`/editproduct/${p.id}`)}
-                            title="Edit Product"
+              <>
+                {/* Marketplace Section - Other Products First */}
+                {otherProducts.length > 0 && (
+                  <div className="product-section">
+                    <h2 className="section-title">
+                      <span className="section-icon">🛍️</span>
+                      Marketplace
+                      <span className="section-count">
+                        {otherProducts.length}
+                      </span>
+                    </h2>
+                    <div className="marketplace-grid">
+                      {otherProducts.map((p) => (
+                        <div key={p.id} className="marketplace-card">
+                          <div
+                            className="product-image clickable"
+                            onClick={() => navigate(`/product/${p.id}`)}
                           >
-                            <FaEdit />
-                          </button>
-                          <button
-                            className="delete-btn"
-                            onClick={() => handleDeleteProduct(p.id, p.name)}
-                            title="Delete Product"
+                            <img src={p.image} alt={p.name} />
+                          </div>
+                          <h3
+                            className="clickable-name"
+                            onClick={() => navigate(`/product/${p.id}`)}
                           >
-                            <FaTrash />
-                          </button>
+                            {p.name}
+                          </h3>
+
+                          <div className="product-info">
+                            <span>₱{p.price.toLocaleString()}</span>
+                            <span>Stock: {p.stock}</span>
+                          </div>
+
+                          <div className="product-actions">
+                            <button
+                              className="add-cart-btn"
+                              onClick={() => handleAddToCart(p)}
+                              disabled={addingToCart === p.id || p.stock <= 0}
+                            >
+                              {addingToCart === p.id ? (
+                                "..."
+                              ) : (
+                                <>
+                                  Add To
+                                  <FaShoppingCart />
+                                </>
+                              )}
+                            </button>
+                            <button
+                              className="buy-btn"
+                              disabled={p.stock <= 0}
+                              onClick={() => {
+                                handleAddToCart(p).then(() =>
+                                  navigate("/cart")
+                                );
+                              }}
+                            >
+                              {p.stock <= 0 ? "Out" : "Buy"}
+                            </button>
+                          </div>
                         </div>
-                      ) : (
-                        <>
-                          <button
-                            className="add-cart-btn"
-                            onClick={() => handleAddToCart(p)}
-                            disabled={addingToCart === p.id || p.stock <= 0}
-                          >
-                            {addingToCart === p.id ? "..." : <FaShoppingCart />}
-                          </button>
-                          <button
-                            className="buy-btn"
-                            disabled={p.stock <= 0}
-                            onClick={() => {
-                              handleAddToCart(p).then(() => navigate("/cart"));
-                            }}
-                          >
-                            {p.stock <= 0 ? "Out" : "Buy"}
-                          </button>
-                        </>
-                      )}
+                      ))}
                     </div>
                   </div>
-                ))}
-              </div>
+                )}
+
+                {/* My Products Section */}
+                {myProducts.length > 0 && (
+                  <div className="product-section">
+                    <h2 className="section-title">
+                      <span className="section-icon">🏪</span>
+                      My Products
+                      <span className="section-count">{myProducts.length}</span>
+                    </h2>
+                    <div className="marketplace-grid">
+                      {myProducts.map((p) => (
+                        <div
+                          key={p.id}
+                          className="marketplace-card my-product-card"
+                        >
+                          <div className="my-product-badge">Your Product</div>
+                          <div
+                            className="product-image clickable"
+                            onClick={() => navigate(`/product/${p.id}`)}
+                          >
+                            <img src={p.image} alt={p.name} />
+                          </div>
+                          <h3
+                            className="clickable-name"
+                            onClick={() => navigate(`/product/${p.id}`)}
+                          >
+                            {p.name}
+                          </h3>
+
+                          <div className="product-info">
+                            <span>₱{p.price.toLocaleString()}</span>
+                            <span>Stock: {p.stock}</span>
+                          </div>
+
+                          <div className="product-actions">
+                            <div className="own-product-actions">
+                              <button
+                                className="edit-btn"
+                                onClick={() => navigate(`/editproduct/${p.id}`)}
+                                title="Edit Product"
+                              >
+                                <FaEdit />
+                                Edit
+                              </button>
+                              <button
+                                className="delete-btn"
+                                onClick={() =>
+                                  handleDeleteProduct(p.id, p.name)
+                                }
+                                title="Delete Product"
+                              >
+                                <FaTrash />
+                                Delete
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Empty states for each section */}
+                {myProducts.length === 0 && otherProducts.length === 0 && (
+                  <div className="empty-message">
+                    No products available yet.
+                  </div>
+                )}
+              </>
             )}
           </section>
         </IconContext.Provider>
