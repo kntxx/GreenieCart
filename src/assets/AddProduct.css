@@ -1,16 +1,40 @@
+/* ---------- iOS 16/17/18 Design System ---------- */
 :root {
-  --bg: #f4f7fc;
-  --sidebar-bg: #166534;
-  --accent: #2563eb;
-  --card-bg: #ffffff;
-  --muted: #6b7280;
-  --success: #16a34a;
+  /* iOS Color Palette */
+  --ios-green: #34c759;
+  --ios-green-dark: #248a3d;
+  --ios-mint: #e9fdf1;
+  --ios-bg: #f2f4f7;
+  --ios-card: rgba(255, 255, 255, 0.85);
+  --ios-card-solid: #ffffff;
+  --ios-text-primary: #1c1c1e;
+  --ios-text-secondary: #8e8e93;
+  --ios-text-tertiary: #aeaeb2;
+  --ios-separator: rgba(60, 60, 67, 0.12);
+  --ios-overlay: rgba(0, 0, 0, 0.4);
+
+  /* iOS Shadows */
+  --ios-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --ios-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --ios-shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.12);
+  --ios-shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.15);
+
+  /* iOS Transitions */
+  --ios-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ios-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* iOS Border Radius */
+  --ios-radius-sm: 10px;
+  --ios-radius-md: 14px;
+  --ios-radius-lg: 18px;
+  --ios-radius-xl: 22px;
 }
 
 /* Reset */
 * {
   box-sizing: border-box;
 }
+
 html,
 body {
   height: 100%;
@@ -18,393 +42,520 @@ body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
-  font-family: "Inter", sans-serif;
-  background: var(--bg);
-  color: #111827;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+    "SF Pro Text", "Helvetica Neue", sans-serif;
+  background: var(--ios-bg);
+  color: var(--ios-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* ---------- Layout ---------- */
+/* ---------- iOS Layout ---------- */
 .dashboard {
   display: flex;
   width: 100vw;
   min-height: 100vh;
-  background: var(--bg);
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
 }
 
-/* ---------- Sidebar ---------- */
+/* ---------- iOS Frosted Sidebar ---------- */
 .sidebar {
-  width: 220px;
-  background: var(--sidebar-bg);
-  color: #fff;
+  width: 250px;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  color: var(--ios-text-primary);
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  transition: width 240ms ease, transform 240ms ease;
+  transition: width 0.35s var(--ios-transition),
+    transform 0.35s var(--ios-transition);
   height: 100vh;
   position: sticky;
   top: 0;
   align-self: flex-start;
   overflow-y: auto;
+  border-right: 1px solid var(--ios-separator);
 }
 
 .sidebar.open {
-  width: 220px;
+  width: 250px;
   transform: translateX(0);
 }
 
-/* On desktop, sidebar is always visible */
 .sidebar.closed {
-  width: 220px;
+  width: 250px;
 }
 
 .sidebar-logo {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
-  padding: 20px;
+  padding: 24px 20px;
   text-align: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid var(--ios-separator);
+  color: var(--ios-green);
+  letter-spacing: -0.3px;
 }
 
 .sidebar nav {
-  padding-top: 12px;
+  padding-top: 14px;
   flex: 1;
 }
 
 .sidebar nav ul {
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding: 0 10px;
 }
 
 .sidebar nav ul li {
-  padding: 14px 18px;
+  padding: 14px 16px;
   cursor: pointer;
-  transition: background 180ms;
+  transition: all 0.2s var(--ios-transition);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.95);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ios-text-primary);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border-radius: var(--ios-radius-md);
+  margin-bottom: 4px;
 }
 
 .sidebar nav ul li:hover {
-  background: rgba(255, 255, 255, 0.04);
-  font-weight: bold;
+  background: rgba(52, 199, 89, 0.12);
+  color: var(--ios-green);
+}
+
+.sidebar nav ul li:active {
+  transform: scale(0.98);
 }
 
 .left {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .orders-arrow {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.8);
-  transition: transform 0.3s ease;
+  color: var(--ios-text-secondary);
+  transition: transform 0.3s var(--ios-transition);
 }
 
 .sidebar ul .dropdown {
   list-style: none;
-  padding-left: 20px;
+  padding-left: 16px;
   margin: 0;
 }
 
 .sidebar ul .dropdown li {
-  padding: 10px 18px;
+  padding: 12px 16px;
   cursor: pointer;
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.9);
-  transition: background 180ms;
+  font-size: 14px;
+  color: var(--ios-text-secondary);
+  transition: all 0.2s var(--ios-transition);
+  border-radius: var(--ios-radius-sm);
 }
 
 .sidebar ul .dropdown li:hover {
-  background: rgba(255, 255, 255, 0.06);
-  font-weight: bold;
+  background: rgba(52, 199, 89, 0.1);
+  color: var(--ios-green);
 }
 
 .signout-btn {
-  display: block;
-  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 12px;
   text-align: center;
   padding: 14px 18px;
-  color: #ffffff;
+  color: #ff3b30;
   font-weight: 600;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--ios-radius-md);
   cursor: pointer;
   flex-shrink: 0;
-}
-.signout-btn:hover {
-  color: white;
+  transition: all 0.2s var(--ios-transition);
+  background: rgba(255, 59, 48, 0.08);
 }
 
+.signout-btn:hover {
+  background: rgba(255, 59, 48, 0.15);
+}
+
+.signout-btn:active {
+  transform: scale(0.98);
+}
+
+/* ---------- iOS Main Content ---------- */
 .main {
   flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 22px;
   height: 100vh;
   overflow-y: auto;
-  padding: 22px 28px;
+  padding: 24px 28px;
 }
 
-/* ---------- Top navbar ---------- */
+/* ---------- iOS Top Navbar ---------- */
 .top-navbar {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 12px;
-  background: var(--card-bg);
-  padding: 12px 16px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(6, 8, 15, 0.04);
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  padding: 16px 20px;
+  border-radius: var(--ios-radius-lg);
+  box-shadow: var(--ios-shadow-md);
   position: sticky;
   top: 0;
   z-index: 10;
+  border: 1px solid rgba(255, 255, 255, 0.6);
 }
 
 .menu-icon {
-  font-size: 20px;
+  font-size: 22px;
   cursor: pointer;
-  color: #374151;
+  color: var(--ios-text-primary);
+  padding: 8px;
+  border-radius: var(--ios-radius-sm);
+  transition: all 0.2s var(--ios-transition);
+}
+
+.menu-icon:hover {
+  background: rgba(52, 199, 89, 0.12);
+  color: var(--ios-green);
 }
 
 .top-navbar h2 {
   margin: 0;
-  color: #166534;
-  font-size: 1.25rem;
+  color: var(--ios-green);
+  font-size: 1.35rem;
   font-weight: 600;
+  letter-spacing: -0.3px;
 }
 
-/* ---------- Add Product Container ---------- */
+/* ---------- iOS Add Product Container ---------- */
 .add-product-container {
   display: flex;
   justify-content: center;
   align-items: flex-start;
   padding: 20px;
+  animation: ios-fade-in 0.4s var(--ios-transition);
+}
+
+@keyframes ios-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .add-product-card {
-  background: var(--card-bg);
-  padding: 30px;
-  border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(11, 15, 35, 0.06);
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  padding: 32px;
+  border-radius: var(--ios-radius-xl);
+  box-shadow: var(--ios-shadow-lg);
   width: 100%;
-  max-width: 500px;
+  max-width: 520px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 .add-product-header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 24px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #e5e7eb;
+  gap: 14px;
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--ios-separator);
 }
 
 .add-product-header h3 {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: 1.35rem;
   font-weight: 600;
-  color: #111827;
+  color: var(--ios-text-primary);
+  letter-spacing: -0.3px;
 }
 
 .add-icon {
-  font-size: 20px;
-  color: var(--success);
-  background: #dcfce7;
-  padding: 10px;
-  border-radius: 10px;
+  font-size: 22px;
+  color: var(--ios-green);
+  background: linear-gradient(
+    135deg,
+    var(--ios-mint) 0%,
+    rgba(52, 199, 89, 0.2) 100%
+  );
+  padding: 12px;
+  border-radius: var(--ios-radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* ---------- Form Styles ---------- */
+/* ---------- iOS Form Styles ---------- */
 .add-product-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 18px;
 }
 
 .form-row {
   display: flex;
-  gap: 16px;
+  gap: 18px;
 }
 
 .form-row .input-group {
   flex: 1;
 }
 
-.error-message {
-  background: #fef2f2;
-  color: #dc2626;
-  padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 16px;
-  font-size: 14px;
-  border: 1px solid #fecaca;
-}
-
-/* ---------- Image Upload ---------- */
-.image-upload-group {
+.input-group {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.image-upload-group label {
+.input-group label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ios-text-primary);
+  margin-left: 2px;
+}
+
+.input-group input,
+.input-group textarea,
+.input-group select {
+  padding: 14px 16px;
+  border: 1px solid var(--ios-separator);
+  border-radius: var(--ios-radius-md);
+  font-size: 16px;
+  font-family: inherit;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--ios-text-primary);
+  transition: all 0.2s var(--ios-transition);
+  outline: none;
+}
+
+.input-group input:focus,
+.input-group textarea:focus,
+.input-group select:focus {
+  border-color: var(--ios-green);
+  box-shadow: 0 0 0 4px rgba(52, 199, 89, 0.15);
+  background: #fff;
+}
+
+.input-group input::placeholder,
+.input-group textarea::placeholder {
+  color: var(--ios-text-tertiary);
+}
+
+.error-message {
+  background: rgba(255, 59, 48, 0.1);
+  color: #ff3b30;
+  padding: 14px 16px;
+  border-radius: var(--ios-radius-md);
+  margin-bottom: 18px;
   font-size: 14px;
   font-weight: 500;
-  color: #374151;
+  border: 1px solid rgba(255, 59, 48, 0.2);
+}
+
+/* ---------- iOS Image Upload ---------- */
+.image-upload-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.image-upload-group label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ios-text-primary);
 }
 
 .image-upload-area {
-  border: 2px dashed #d1d5db;
-  border-radius: 12px;
-  padding: 24px;
+  border: 2px dashed rgba(52, 199, 89, 0.4);
+  border-radius: var(--ios-radius-lg);
+  padding: 28px;
   text-align: center;
   cursor: pointer;
-  transition: all 0.2s ease;
-  background: #f9fafb;
-  min-height: 180px;
+  transition: all 0.3s var(--ios-transition);
+  background: rgba(52, 199, 89, 0.04);
+  min-height: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .image-upload-area:hover {
-  border-color: var(--success);
-  background: #f0fdf4;
+  border-color: var(--ios-green);
+  background: rgba(52, 199, 89, 0.08);
+  transform: translateY(-2px);
+}
+
+.image-upload-area:active {
+  transform: scale(0.99);
 }
 
 .upload-preview {
   max-width: 100%;
-  max-height: 200px;
-  border-radius: 8px;
+  max-height: 220px;
+  border-radius: var(--ios-radius-md);
   object-fit: cover;
+  box-shadow: var(--ios-shadow-md);
 }
 
 .upload-placeholder {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  color: var(--muted);
+  gap: 10px;
+  color: var(--ios-text-secondary);
 }
 
 .upload-placeholder p {
   margin: 0;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 500;
-  color: #374151;
+  color: var(--ios-text-primary);
 }
 
 .upload-placeholder span {
-  font-size: 12px;
-  color: #9ca3af;
+  font-size: 13px;
+  color: var(--ios-text-tertiary);
 }
 
 .upload-icon {
-  font-size: 48px;
-  color: var(--success);
+  font-size: 52px;
+  color: var(--ios-green);
 }
 
 .file-name {
-  font-size: 12px;
-  color: var(--muted);
-  margin: 4px 0 0 0;
+  font-size: 13px;
+  color: var(--ios-text-secondary);
+  margin: 6px 0 0 0;
 }
 
-/* ---------- Image Preview (legacy) ---------- */
+/* ---------- iOS Image Preview ---------- */
 .image-preview {
-  background: #f9fafb;
-  padding: 16px;
-  border-radius: 12px;
+  background: rgba(52, 199, 89, 0.06);
+  padding: 18px;
+  border-radius: var(--ios-radius-lg);
   text-align: center;
+  border: 1px solid rgba(52, 199, 89, 0.15);
 }
 
 .image-preview p {
-  margin: 0 0 12px 0;
+  margin: 0 0 14px 0;
   font-size: 13px;
-  color: var(--muted);
+  font-weight: 500;
+  color: var(--ios-text-secondary);
 }
 
 .image-preview img {
   max-width: 100%;
-  max-height: 150px;
-  border-radius: 8px;
+  max-height: 160px;
+  border-radius: var(--ios-radius-md);
   object-fit: cover;
+  box-shadow: var(--ios-shadow-sm);
 }
 
-/* ---------- Form Actions ---------- */
+/* ---------- iOS Form Actions ---------- */
 .form-actions {
   display: flex;
-  gap: 12px;
-  margin-top: 8px;
+  gap: 14px;
+  margin-top: 12px;
 }
 
 .cancel-btn,
 .submit-btn {
   flex: 1;
-  padding: 12px 20px;
+  padding: 15px 24px;
   border: none;
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: 100px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s var(--ios-transition);
 }
 
 .cancel-btn {
-  background: #f3f4f6;
-  color: #374151;
+  background: rgba(142, 142, 147, 0.12);
+  color: var(--ios-text-primary);
 }
 
 .cancel-btn:hover {
-  background: #e5e7eb;
+  background: rgba(142, 142, 147, 0.2);
+}
+
+.cancel-btn:active {
+  transform: scale(0.97);
 }
 
 .submit-btn {
-  background: var(--success);
+  background: linear-gradient(
+    135deg,
+    var(--ios-green) 0%,
+    var(--ios-green-dark) 100%
+  );
   color: #fff;
+  box-shadow: 0 4px 14px rgba(52, 199, 89, 0.35);
 }
 
 .submit-btn:hover {
-  background: #0e5729;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(52, 199, 89, 0.45);
+}
+
+.submit-btn:active {
+  transform: scale(0.97);
 }
 
 .submit-btn:disabled {
-  background: #9ca3af;
+  background: var(--ios-text-tertiary);
   cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
 }
 
-/* Sidebar Overlay - Only visible on mobile */
+/* ---------- Sidebar Overlay ---------- */
 .sidebar-overlay {
   display: none;
 }
 
-/* Hide hamburger menu on desktop */
 .menu-icon {
   display: none;
 }
 
-/* ---------- Responsive ---------- */
+/* ---------- iOS Responsive ---------- */
 @media (max-width: 768px) {
   .dashboard {
     flex-direction: column;
   }
 
-  /* Show hamburger menu on mobile */
   .menu-icon {
-    display: block;
-    font-size: 20px;
+    display: flex;
+    font-size: 22px;
     cursor: pointer;
-    color: #374151;
+    color: var(--ios-text-primary);
+    padding: 8px;
+    border-radius: 10px;
   }
 
-  /* Show overlay on mobile when sidebar is open */
   .sidebar-overlay.show {
     display: block;
     position: fixed;
@@ -412,20 +563,23 @@ body {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     z-index: 998;
+    animation: ios-fade-in 0.2s ease;
   }
 
   .sidebar {
     position: fixed;
     top: 0;
     left: 0;
-    width: 260px;
+    width: 280px;
     height: 100vh;
     z-index: 999;
     transform: translateX(-100%);
-    transition: transform 0.3s ease;
-    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+    transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+    box-shadow: 8px 0 32px rgba(0, 0, 0, 0.15);
   }
 
   .sidebar.open {
@@ -434,25 +588,28 @@ body {
 
   .sidebar.closed {
     transform: translateX(-100%);
-    width: 260px;
+    width: 280px;
   }
 
   .main {
     width: 100%;
-    padding: 12px;
+    padding: 16px;
+    height: auto;
+    min-height: 100vh;
   }
 
   .top-navbar {
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 12px;
   }
 
   .top-navbar h2 {
-    font-size: 1rem;
+    font-size: 1.1rem;
   }
 
   .add-product-card {
-    padding: 20px;
+    padding: 24px;
+    border-radius: var(--ios-radius-lg);
   }
 
   .form-row {
@@ -468,4 +625,23 @@ body {
   .submit-btn {
     width: 100%;
   }
+}
+
+/* iOS Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 100px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
 }

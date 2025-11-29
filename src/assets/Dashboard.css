@@ -1,16 +1,42 @@
+/* ============================================
+   DASHBOARD - iOS 16/17/18 INSPIRED DESIGN
+   GreenieCart - Apple Human Interface Guidelines
+   ============================================ */
+
+/* ---------- iOS Design Tokens ---------- */
 :root {
-  --bg: #f4f7fc;
-  --sidebar-bg: #166534;
-  --accent: #2563eb;
-  --card-bg: #ffffff;
-  --muted: #6b7280;
-  --success: #16a34a;
+  /* iOS Colors */
+  --ios-green: #34c759;
+  --ios-green-light: #e9fdf1;
+  --ios-green-dark: #248a3d;
+  --ios-blue: #0a84ff;
+  --ios-red: #ff3b30;
+
+  /* iOS Neutrals */
+  --ios-bg: #f2f4f7;
+  --ios-card: rgba(255, 255, 255, 0.85);
+  --ios-frosted: rgba(255, 255, 255, 0.72);
+
+  /* iOS Text */
+  --ios-text-primary: #1c1c1e;
+  --ios-text-secondary: #8e8e93;
+
+  /* Legacy mappings */
+  --bg: var(--ios-bg);
+  --sidebar-bg: linear-gradient(180deg, #1b5e3b 0%, #166534 50%, #134e2b 100%);
+  --accent: var(--ios-blue);
+  --card-bg: var(--ios-card);
+  --muted: var(--ios-text-secondary);
+  --success: var(--ios-green);
 }
 
-/* Reset */
+/* Reset with iOS defaults */
 * {
   box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
 html,
 body {
   height: 100%;
@@ -18,9 +44,10 @@ body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
-  font-family: "Inter", sans-serif;
-  background: var(--bg);
-  color: #111827;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+    "SF Pro Text", "Inter", sans-serif;
+  background: var(--ios-bg);
+  color: var(--ios-text-primary);
 }
 
 /* ---------- Layout ---------- */
@@ -28,156 +55,194 @@ body {
   display: flex;
   width: 100vw;
   min-height: 100vh;
-  background: var(--bg);
+  background: linear-gradient(180deg, #f8fafc 0%, #f2f4f7 50%, #e8ecef 100%);
+  background-attachment: fixed;
 }
 
-/* ---------- Sidebar ---------- */
+/* ---------- iOS Frosted Sidebar ---------- */
 .sidebar {
-  width: 220px;
+  width: 240px;
   background: var(--sidebar-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   color: #fff;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  transition: width 240ms ease, transform 240ms ease;
+  transition: all 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
   height: 100vh;
   position: sticky;
   top: 0;
   align-self: flex-start;
   overflow-y: auto;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.08);
 }
 
 .sidebar.open {
-  width: 220px;
+  width: 240px;
   transform: translateX(0);
 }
 
-/* On desktop, sidebar is always visible */
 .sidebar.closed {
-  width: 220px;
+  width: 240px;
 }
 
 .sidebar-logo {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
-  padding: 20px;
+  padding: 24px 20px;
   text-align: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  letter-spacing: -0.5px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .sidebar nav {
-  padding-top: 12px;
+  padding-top: 16px;
   flex: 1;
 }
 
 .sidebar nav ul {
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding: 0 12px;
 }
 
 .sidebar nav ul li {
-  padding: 14px 18px;
+  padding: 14px 16px;
+  margin: 4px 0;
   cursor: pointer;
-  transition: background 180ms;
+  border-radius: 12px;
+  transition: all 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.95);
+  font-size: 15px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
 .sidebar nav ul li:hover {
-  background: rgba(255, 255, 255, 0.04);
-  font-weight: bold;
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateX(4px);
+}
+
+.sidebar nav ul li:active {
+  transform: scale(0.98);
+  background: rgba(255, 255, 255, 0.18);
 }
 
 .left {
   display: flex;
   align-items: center;
-  gap: 10px; /* spacing between icon and text */
+  gap: 12px;
 }
 
-/* Right arrow */
 .orders-arrow {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.8);
-  transition: transform 0.3s ease; /* smooth rotation when toggled */
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
-/* Optional: rotate arrow when open */
 .orders-arrow.open {
   transform: rotate(180deg);
 }
 
 .sidebar ul .dropdown {
   list-style: none;
-  padding-left: 20px;
+  padding: 4px 0 4px 24px;
   margin: 0;
 }
 
 .sidebar ul .dropdown li {
-  padding: 10px 18px;
+  padding: 12px 16px;
   cursor: pointer;
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.9);
-  transition: background 180ms;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.85);
+  border-radius: 10px;
+  transition: all 0.2s ease;
 }
 
 .sidebar ul .dropdown li:hover {
-  background: rgba(255, 255, 255, 0.06);
-  font-weight: bold;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .signout-btn {
-  display: block;
-  margin-top: auto;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 16px;
   padding: 14px 18px;
   color: #ffffff;
   font-weight: 600;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 15px;
+  background: rgba(255, 59, 48, 0.15);
+  border: 1px solid rgba(255, 59, 48, 0.3);
+  border-radius: 12px;
   cursor: pointer;
-  flex-shrink: 0;
-}
-.signout-btn:hover {
-  color: white;
+  transition: all 0.25s ease;
 }
 
+.signout-btn:hover {
+  background: rgba(255, 59, 48, 0.25);
+  transform: scale(1.02);
+}
+
+.signout-btn:active {
+  transform: scale(0.98);
+}
+
+/* ---------- Main Content ---------- */
 .main {
   flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
   height: 100vh;
   overflow-y: auto;
-  padding: 22px 28px;
+  padding: 24px 32px;
+  background: transparent;
 }
 
-/* ---------- Top navbar ---------- */
+/* ---------- iOS Glass Top Navbar ---------- */
 .top-navbar {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 12px;
-  background: var(--card-bg);
-  padding: 12px 16px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(6, 8, 15, 0.04);
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  padding: 16px 20px;
+  border-radius: 20px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06), 0 8px 32px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.6);
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 100;
+  transition: all 0.25s ease;
 }
 
-/* Navbar icons */
 .menu-icon {
-  font-size: 20px;
+  font-size: 22px;
   cursor: pointer;
-  color: #374151;
+  color: var(--ios-text-primary);
+  padding: 8px;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  display: none;
+}
+
+.menu-icon:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.menu-icon:active {
+  transform: scale(0.92);
 }
 
 .search-notifications {
@@ -187,69 +252,97 @@ body {
   gap: 12px;
 }
 
+/* iOS Pill Buttons */
 .add-product-btn,
 .cart-btn {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
+  gap: 8px;
+  padding: 10px 20px;
   border: none;
-  border-radius: 8px;
-  font-size: 13px;
+  border-radius: 100px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
   white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .add-product-btn {
-  background: var(--success);
+  background: var(--ios-green);
   color: #fff;
 }
 
 .add-product-btn:hover {
-  background: #0e5729;
+  background: var(--ios-green-dark);
+  box-shadow: 0 4px 16px rgba(52, 199, 89, 0.3);
+  transform: translateY(-1px);
+}
+
+.add-product-btn:active {
+  transform: scale(0.97);
 }
 
 .cart-btn {
-  background: var(--accent);
+  background: var(--ios-blue);
   color: #fff;
   position: relative;
 }
 
 .cart-btn:hover {
-  background: #1d4ed8;
+  background: #0070e0;
+  box-shadow: 0 4px 16px rgba(10, 132, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.cart-btn:active {
+  transform: scale(0.97);
 }
 
 .cart-badge {
   position: absolute;
-  top: -8px;
-  right: -8px;
-  background: #dc2626;
+  top: -6px;
+  right: -6px;
+  background: var(--ios-red);
   color: #fff;
   font-size: 11px;
   font-weight: 700;
-  min-width: 18px;
-  height: 18px;
-  border-radius: 50%;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 4px;
+  padding: 0 6px;
+  box-shadow: 0 2px 8px rgba(255, 59, 48, 0.4);
+  animation: ios-spring-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+/* iOS Search Bar */
 .search-bar {
   display: flex;
   align-items: center;
-  gap: 8px;
-  background: #f1f3f5;
-  padding: 8px 12px;
-  border-radius: 10px;
-  min-width: 240px;
-  max-width: 520px;
+  gap: 10px;
+  background: rgba(142, 142, 147, 0.12);
+  padding: 12px 16px;
+  border-radius: 100px;
+  min-width: 280px;
+  max-width: 400px;
+  border: 1px solid transparent;
+  transition: all 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
+
+.search-bar:focus-within {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: var(--ios-green);
+  box-shadow: 0 0 0 4px rgba(52, 199, 89, 0.12);
+  transform: scale(1.02);
+}
+
 .search-bar svg {
-  color: #6b7280;
+  color: var(--ios-text-secondary);
+  flex-shrink: 0;
 }
 
 .search-bar input {
@@ -257,132 +350,241 @@ body {
   background: transparent;
   outline: none;
   width: 100%;
-  font-size: 14px;
-  color: #111827;
+  font-size: 16px;
+  color: var(--ios-text-primary);
+}
+
+.search-bar input::placeholder {
+  color: var(--ios-text-secondary);
 }
 
 .top-navbar h2 {
   margin: 0;
-  color: #166534;
-  font-size: 1.25rem;
-  font-weight: 600;
+  color: var(--ios-green-dark);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.3px;
 }
 
-/* ---------- Marketplace ---------- */
+/* ---------- Marketplace Section ---------- */
 .marketplace {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
+  animation: ios-fade-in 0.5s ease forwards;
 }
+
 .marketplace h2 {
-  margin: 0 0 6px 0;
-  font-size: 18px;
-  color: #111827;
+  margin: 0 0 8px 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ios-text-primary);
+  letter-spacing: -0.3px;
 }
+
+/* ---------- Product Sections ---------- */
+.product-section {
+  margin-bottom: 40px;
+  animation: ios-fade-in 0.5s ease forwards;
+}
+
+.product-section:last-child {
+  margin-bottom: 0;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 20px 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ios-text-primary);
+  letter-spacing: -0.4px;
+}
+
+.section-icon {
+  font-size: 24px;
+}
+
+.section-count {
+  background: rgba(142, 142, 147, 0.12);
+  color: var(--ios-text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 100px;
+  margin-left: 4px;
+}
+
+/* My Product Card Styles */
+.my-product-card {
+  position: relative;
+  border: 2px solid rgba(52, 199, 89, 0.3);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(233, 253, 241, 0.6) 100%
+  );
+}
+
+.my-product-card:hover {
+  border-color: rgba(52, 199, 89, 0.5);
+}
+
+.my-product-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: linear-gradient(
+    135deg,
+    var(--ios-green) 0%,
+    var(--ios-green-dark) 100%
+  );
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 100px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 8px rgba(52, 199, 89, 0.3);
+}
+
 .marketplace-grid {
   display: grid;
-  gap: 16px;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
+
+/* iOS Product Card */
 .marketplace-card {
-  background: var(--card-bg);
-  padding: 14px;
-  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 18px;
+  border-radius: 20px;
   text-align: center;
-  box-shadow: 0 6px 16px rgba(11, 15, 35, 0.03);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.6);
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   align-items: center;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  animation: ios-slide-up 0.5s ease forwards;
+  animation-delay: calc(var(--card-index, 0) * 0.05s);
+  opacity: 0;
 }
+
 .marketplace-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 20px rgba(11, 15, 35, 0.1);
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 16px 48px rgba(0, 0, 0, 0.1);
 }
+
 .product-image {
   width: 100%;
-  height: 120px;
-  border-radius: 12px;
-  background: #f1f3f5;
+  height: 140px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #f8fafc 0%, #eef2f6 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  transition: all 0.3s ease;
 }
+
+.marketplace-card:hover .product-image {
+  transform: scale(1.02);
+}
+
 .product-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 12px;
+  border-radius: 16px;
+  transition: all 0.3s ease;
 }
+
 .marketplace-card h3 {
   margin: 0;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
-  color: #111827;
+  color: var(--ios-text-primary);
+  letter-spacing: -0.2px;
+  line-height: 1.3;
 }
 
 .product-info {
   display: flex;
-  justify-content: center; /* center horizontally */
-  gap: 35px; /* small space between price and stock */
+  justify-content: center;
+  gap: 24px;
   width: 100%;
-  font-size: 12px; /* readable, slightly smaller */
-  color: var(--muted);
-  margin-top: 4px;
+  font-size: 13px;
+  color: var(--ios-text-secondary);
+  font-weight: 500;
+}
+
+.product-info span:first-child {
+  color: var(--ios-green);
+  font-weight: 700;
+  font-size: 15px;
 }
 
 .product-actions {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 10px;
   width: 100%;
-  margin-top: 6px;
+  margin-top: 4px;
 }
 
+/* iOS Pill Action Buttons */
 .add-cart-btn,
 .buy-btn {
   flex: 1;
-  text-align: center;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  padding: 4px 6px;
+  padding: 10px 16px;
   border: none;
-  border-radius: 6px;
+  border-radius: 100px;
   cursor: pointer;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  background-color: #16a34a;
+  background: var(--ios-green);
   color: white;
-  transition: background 0.2s ease;
-}
-
-.add-cart-btn,
-.buy-btn {
-  background-color: #16a34a;
-  color: white;
+  transition: all 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
+  box-shadow: 0 2px 8px rgba(52, 199, 89, 0.25);
 }
 
 .add-cart-btn:hover,
 .buy-btn:hover {
-  background-color: #0e5729;
+  background: var(--ios-green-dark);
+  box-shadow: 0 4px 16px rgba(52, 199, 89, 0.35);
+  transform: translateY(-1px);
+}
+
+.add-cart-btn:active,
+.buy-btn:active {
+  transform: scale(0.96);
 }
 
 .add-cart-btn:disabled,
 .buy-btn:disabled {
-  background-color: #9ca3af;
+  background: #c7c7cc;
+  box-shadow: none;
   cursor: not-allowed;
+  transform: none;
 }
 
 .own-product-label {
-  background: #fef3c7;
-  color: #92400e;
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-size: 12px;
+  background: rgba(255, 149, 0, 0.12);
+  color: #cc7700;
+  padding: 10px 18px;
+  border-radius: 100px;
+  font-size: 13px;
   font-weight: 600;
   text-align: center;
   width: 100%;
@@ -398,71 +600,126 @@ body {
 .edit-btn,
 .delete-btn {
   flex: 1;
-  padding: 8px 12px;
+  padding: 10px 16px;
   border: none;
-  border-radius: 6px;
+  border-radius: 100px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 6px;
 }
 
 .edit-btn {
-  background-color: #3b82f6;
+  background: var(--ios-blue);
   color: white;
+  box-shadow: 0 2px 8px rgba(10, 132, 255, 0.25);
 }
 
 .edit-btn:hover {
-  background-color: #2563eb;
+  background: #0070e0;
+  box-shadow: 0 4px 16px rgba(10, 132, 255, 0.35);
+  transform: translateY(-1px);
+}
+
+.edit-btn:active {
+  transform: scale(0.96);
 }
 
 .delete-btn {
-  background-color: #ef4444;
+  background: var(--ios-red);
   color: white;
+  box-shadow: 0 2px 8px rgba(255, 59, 48, 0.25);
 }
 
 .delete-btn:hover {
-  background-color: #dc2626;
+  background: #e0352b;
+  box-shadow: 0 4px 16px rgba(255, 59, 48, 0.35);
+  transform: translateY(-1px);
+}
+
+.delete-btn:active {
+  transform: scale(0.96);
 }
 
 .loading-message,
 .empty-message {
   text-align: center;
-  color: var(--muted);
-  padding: 60px 20px;
-  font-size: 16px;
-  background: var(--card-bg);
-  border-radius: 12px;
+  color: var(--ios-text-secondary);
+  padding: 80px 24px;
+  font-size: 17px;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
-/* Sidebar Overlay for Mobile - Only visible on mobile */
+/* ---------- iOS Animations ---------- */
+@keyframes ios-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ios-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ios-spring-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  60% {
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ---------- Sidebar Overlay ---------- */
 .sidebar-overlay {
   display: none;
 }
 
-/* Hide hamburger menu on desktop */
 .menu-icon {
   display: none;
 }
 
-/* ---------- Responsive ---------- */
+/* ---------- Responsive Design ---------- */
 @media (max-width: 768px) {
   .dashboard {
     flex-direction: column;
   }
 
-  /* Show hamburger menu on mobile */
   .menu-icon {
-    display: block;
-    font-size: 20px;
+    display: flex;
+    font-size: 22px;
     cursor: pointer;
-    color: #374151;
+    color: var(--ios-text-primary);
+    padding: 8px;
+    border-radius: 10px;
   }
 
-  /* Show overlay on mobile when sidebar is open */
   .sidebar-overlay.show {
     display: block;
     position: fixed;
@@ -470,21 +727,23 @@ body {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     z-index: 998;
+    animation: ios-fade-in 0.2s ease;
   }
 
-  /* Floating Sidebar */
   .sidebar {
     position: fixed;
     top: 0;
     left: 0;
-    width: 260px;
+    width: 280px;
     height: 100vh;
     z-index: 999;
     transform: translateX(-100%);
-    transition: transform 0.3s ease;
-    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+    transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+    box-shadow: 8px 0 32px rgba(0, 0, 0, 0.15);
   }
 
   .sidebar.open {
@@ -493,24 +752,25 @@ body {
 
   .sidebar.closed {
     transform: translateX(-100%);
-    width: 260px;
+    width: 280px;
   }
 
   .main {
     width: 100%;
-    padding: 12px;
-    height: 100vh;
+    padding: 16px;
+    height: auto;
+    min-height: 100vh;
   }
 
-  /* Top Navbar Mobile */
   .top-navbar {
     flex-wrap: wrap;
-    gap: 10px;
-    padding: 10px 12px;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 16px;
   }
 
   .top-navbar h2 {
-    font-size: 0.9rem;
+    font-size: 1rem;
     flex: 1;
     min-width: 0;
     white-space: nowrap;
@@ -521,15 +781,15 @@ body {
   .search-notifications {
     width: 100%;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 10px;
     margin-left: 0;
     order: 3;
   }
 
   .add-product-btn,
   .cart-btn {
-    padding: 8px 12px;
-    font-size: 12px;
+    padding: 10px 16px;
+    font-size: 13px;
   }
 
   .search-bar {
@@ -538,18 +798,14 @@ body {
     max-width: 100%;
   }
 
-  .search-bar input {
-    width: 100%;
-  }
-
-  /* Marketplace Grid Mobile */
   .marketplace-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    gap: 14px;
   }
 
   .marketplace-card {
-    padding: 12px;
+    padding: 14px;
+    border-radius: 16px;
   }
 
   .marketplace-card h3 {
@@ -558,6 +814,7 @@ body {
 
   .product-image {
     height: 120px;
+    border-radius: 12px;
   }
 
   .product-info {
@@ -567,38 +824,39 @@ body {
   }
 
   .product-actions {
-    gap: 6px;
+    gap: 8px;
   }
 
   .add-cart-btn,
   .buy-btn {
-    padding: 8px 12px;
-    font-size: 12px;
+    padding: 10px 14px;
+    font-size: 13px;
+    border-radius: 100px;
   }
 
   .own-product-actions {
-    gap: 6px;
+    gap: 8px;
   }
 
   .edit-btn,
   .delete-btn {
-    padding: 6px 10px;
+    padding: 10px 12px;
     font-size: 12px;
   }
 }
 
 @media (max-width: 480px) {
   .top-navbar h2 {
-    font-size: 0.75rem;
+    font-size: 0.85rem;
   }
 
   .marketplace-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
 
   .marketplace-card {
-    padding: 10px;
+    padding: 12px;
   }
 
   .product-image {
@@ -616,6 +874,203 @@ body {
 
   .add-product-btn,
   .cart-btn {
-    padding: 10px;
+    padding: 12px;
+    border-radius: 12px;
   }
+}
+
+/* ---------- iOS Popup Modal ---------- */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: popup-fade-in 0.2s ease;
+}
+
+@keyframes popup-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.popup-modal {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 32px;
+  max-width: 380px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  position: relative;
+  animation: popup-scale-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes popup-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.popup-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.06);
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ios-text-secondary);
+  transition: all 0.2s ease;
+}
+
+.popup-close:hover {
+  background: rgba(0, 0, 0, 0.12);
+  color: var(--ios-text-primary);
+}
+
+.popup-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 32px;
+}
+
+.popup-icon-success {
+  background: linear-gradient(
+    135deg,
+    var(--ios-green) 0%,
+    var(--ios-green-dark) 100%
+  );
+  color: white;
+  box-shadow: 0 4px 16px rgba(52, 199, 89, 0.4);
+}
+
+.popup-icon-error {
+  background: linear-gradient(135deg, #ff3b30 0%, #d70015 100%);
+  color: white;
+  box-shadow: 0 4px 16px rgba(255, 59, 48, 0.4);
+}
+
+.popup-icon-info {
+  background: linear-gradient(135deg, #0a84ff 0%, #0055d4 100%);
+  color: white;
+  box-shadow: 0 4px 16px rgba(10, 132, 255, 0.4);
+}
+
+.popup-icon-confirm {
+  background: linear-gradient(135deg, #ff9500 0%, #ff6b00 100%);
+  color: white;
+  box-shadow: 0 4px 16px rgba(255, 149, 0, 0.4);
+}
+
+.popup-message {
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--ios-text-primary);
+  margin: 0 0 24px 0;
+  line-height: 1.5;
+}
+
+.popup-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.popup-btn {
+  padding: 14px 28px;
+  border: none;
+  border-radius: 100px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+  min-width: 100px;
+}
+
+.popup-btn:active {
+  transform: scale(0.96);
+}
+
+.popup-btn-ok {
+  background: linear-gradient(
+    135deg,
+    var(--ios-green) 0%,
+    var(--ios-green-dark) 100%
+  );
+  color: white;
+  box-shadow: 0 4px 14px rgba(52, 199, 89, 0.35);
+}
+
+.popup-btn-ok:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(52, 199, 89, 0.45);
+}
+
+.popup-btn-cancel {
+  background: rgba(142, 142, 147, 0.12);
+  color: var(--ios-text-primary);
+}
+
+.popup-btn-cancel:hover {
+  background: rgba(142, 142, 147, 0.2);
+}
+
+.popup-btn-confirm {
+  background: linear-gradient(135deg, #ff3b30 0%, #d70015 100%);
+  color: white;
+  box-shadow: 0 4px 14px rgba(255, 59, 48, 0.35);
+}
+
+.popup-btn-confirm:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 59, 48, 0.45);
+}
+
+/* iOS Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 100px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
 }

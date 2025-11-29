@@ -8,6 +8,12 @@ import {
   FaUser,
   FaBars,
   FaBox,
+  FaTruck,
+  FaCreditCard,
+  FaMoneyBillWave,
+  FaMobileAlt,
+  FaChevronDown,
+  FaChevronUp,
 } from "react-icons/fa";
 import { IconContext } from "react-icons";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
@@ -23,10 +29,24 @@ interface OrderItem {
   image: string;
 }
 
+interface DeliveryDetails {
+  fullName: string;
+  phone: string;
+  address: string;
+  city: string;
+  postalCode: string;
+  notes: string;
+}
+
+type PaymentMethod = "cod" | "gcash" | "card";
+
 interface Order {
   id: string;
   items: OrderItem[];
   total: number;
+  deliveryDetails?: DeliveryDetails;
+  paymentMethod?: PaymentMethod;
+  status?: string;
   createdAt: Date;
 }
 
@@ -36,10 +56,14 @@ const MyOrder: React.FC = () => {
   const [ordersDropdownOpen, setOrdersDropdownOpen] = useState(false);
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const closeSidebar = () => setSidebarOpen(false);
   const toggleOrdersDropdown = () => setOrdersDropdownOpen(!ordersDropdownOpen);
+  const toggleOrderDetails = (orderId: string) => {
+    setExpandedOrder(expandedOrder === orderId ? null : orderId);
+  };
 
   // Sign out handler
   const handleSignOut = async () => {
@@ -71,6 +95,9 @@ const MyOrder: React.FC = () => {
             id: doc.id,
             items: data.items || [],
             total: data.total || 0,
+            deliveryDetails: data.deliveryDetails || null,
+            paymentMethod: data.paymentMethod || null,
+            status: data.status || "pending",
             createdAt: data.createdAt?.toDate() || new Date(),
           });
         });
@@ -94,6 +121,20 @@ const MyOrder: React.FC = () => {
       hour: "2-digit",
       minute: "2-digit",
     });
+  };
+
+  // Get payment method label and icon
+  const getPaymentInfo = (method?: PaymentMethod) => {
+    switch (method) {
+      case "cod":
+        return { label: "Cash on Delivery", icon: <FaMoneyBillWave /> };
+      case "gcash":
+        return { label: "GCash", icon: <FaMobileAlt /> };
+      case "card":
+        return { label: "Credit/Debit Card", icon: <FaCreditCard /> };
+      default:
+        return { label: "Not specified", icon: null };
+    }
   };
 
   return (
@@ -212,7 +253,10 @@ const MyOrder: React.FC = () => {
               <div className="orders-list">
                 {orders.map((order) => (
                   <div key={order.id} className="order-card">
-                    <div className="order-header">
+                    <div
+                      className="order-header"
+                      onClick={() => toggleOrderDetails(order.id)}
+                    >
                       <div className="order-info">
                         <span className="order-id">
                           Order #{order.id.slice(-8).toUpperCase()}
@@ -221,27 +265,93 @@ const MyOrder: React.FC = () => {
                           {formatDate(order.createdAt)}
                         </span>
                       </div>
-                      <div className="order-total">
-                        <span>Total: ₱{order.total.toLocaleString()}</span>
+                      <div className="order-header-right">
+                        <div className="order-total">
+                          <span>₱{order.total.toLocaleString()}</span>
+                        </div>
+                        <span className="expand-icon">
+                          {expandedOrder === order.id ? (
+                            <FaChevronUp />
+                          ) : (
+                            <FaChevronDown />
+                          )}
+                        </span>
                       </div>
                     </div>
 
-                    <div className="order-items">
-                      {order.items.map((item, index) => (
-                        <div key={index} className="order-item">
-                          <img src={item.image} alt={item.name} />
-                          <div className="item-details">
-                            <span className="item-name">{item.name}</span>
-                            <span className="item-price">
-                              ₱{item.price.toLocaleString()} × {item.quantity}
-                            </span>
+                    {/* Expanded Order Details */}
+                    {expandedOrder === order.id && (
+                      <div className="order-expanded">
+                        {/* Delivery Details */}
+                        {order.deliveryDetails && (
+                          <div className="order-section">
+                            <h4>
+                              <FaTruck /> Delivery Details
+                            </h4>
+                            <div className="section-content">
+                              <p>
+                                <strong>
+                                  {order.deliveryDetails.fullName}
+                                </strong>
+                              </p>
+                              <p>{order.deliveryDetails.phone}</p>
+                              <p>{order.deliveryDetails.address}</p>
+                              <p>
+                                {order.deliveryDetails.city},{" "}
+                                {order.deliveryDetails.postalCode}
+                              </p>
+                              {order.deliveryDetails.notes && (
+                                <p className="delivery-notes">
+                                  <em>Note: {order.deliveryDetails.notes}</em>
+                                </p>
+                              )}
+                            </div>
                           </div>
-                          <div className="item-subtotal">
-                            ₱{(item.price * item.quantity).toLocaleString()}
+                        )}
+
+                        {/* Payment Method */}
+                        {order.paymentMethod && (
+                          <div className="order-section">
+                            <h4>
+                              <FaCreditCard /> Payment Method
+                            </h4>
+                            <div className="section-content payment-method-display">
+                              {getPaymentInfo(order.paymentMethod).icon}
+                              <span>
+                                {getPaymentInfo(order.paymentMethod).label}
+                              </span>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Order Items */}
+                        <div className="order-section">
+                          <h4>
+                            <FaBox /> Items Ordered
+                          </h4>
+                          <div className="order-items">
+                            {order.items.map((item, index) => (
+                              <div key={index} className="order-item">
+                                <img src={item.image} alt={item.name} />
+                                <div className="item-details">
+                                  <span className="item-name">{item.name}</span>
+                                  <span className="item-price">
+                                    ₱{item.price.toLocaleString()} ×{" "}
+                                    {item.quantity}
+                                  </span>
+                                </div>
+                                <div className="item-subtotal">
+                                  ₱
+                                  {(
+                                    item.price * item.quantity
+                                  ).toLocaleString()}
+                                </div>
+                              </div>
+                            ))}
                           </div>
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
