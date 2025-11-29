@@ -412,18 +412,10 @@ const Dashboard: React.FC = () => {
                     <div className="marketplace-grid">
                       {otherProducts.map((p) => (
                         <div key={p.id} className="marketplace-card">
-                          <div
-                            className="product-image clickable"
-                            onClick={() => navigate(`/product/${p.id}`)}
-                          >
+                          <div className="product-image">
                             <img src={p.image} alt={p.name} />
                           </div>
-                          <h3
-                            className="clickable-name"
-                            onClick={() => navigate(`/product/${p.id}`)}
-                          >
-                            {p.name}
-                          </h3>
+                          <h3>{p.name}</h3>
 
                           <div className="product-info">
                             <span>₱{p.price.toLocaleString()}</span>
@@ -478,18 +470,10 @@ const Dashboard: React.FC = () => {
                           className="marketplace-card my-product-card"
                         >
                           <div className="my-product-badge">Your Product</div>
-                          <div
-                            className="product-image clickable"
-                            onClick={() => navigate(`/product/${p.id}`)}
-                          >
+                          <div className="product-image">
                             <img src={p.image} alt={p.name} />
                           </div>
-                          <h3
-                            className="clickable-name"
-                            onClick={() => navigate(`/product/${p.id}`)}
-                          >
-                            {p.name}
-                          </h3>
+                          <h3>{p.name}</h3>
 
                           <div className="product-info">
                             <span>₱{p.price.toLocaleString()}</span>

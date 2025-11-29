@@ -494,14 +494,6 @@ body {
   transition: all 0.3s ease;
 }
 
-.product-image.clickable {
-  cursor: pointer;
-}
-
-.product-image.clickable:hover {
-  transform: scale(1.03);
-}
-
 .marketplace-card:hover .product-image {
   transform: scale(1.02);
 }
@@ -521,15 +513,6 @@ body {
   color: var(--ios-text-primary);
   letter-spacing: -0.2px;
   line-height: 1.3;
-}
-
-.marketplace-card h3.clickable-name {
-  cursor: pointer;
-  transition: color 0.2s ease;
-}
-
-.marketplace-card h3.clickable-name:hover {
-  color: var(--ios-green);
 }
 
 .product-info {

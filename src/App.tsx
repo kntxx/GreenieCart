@@ -7,7 +7,6 @@ import MyOrder from "./components/MyOrder";
 import AddProduct from "./components/AddProduct";
 import EditProduct from "./components/EditProduct";
 import Cart from "./components/Cart";
-import ProductDetails from "./components/ProductDetails";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
@@ -86,14 +85,6 @@ function App() {
           element={
             <ProtectedRoute requireAuth={true}>
               <Cart />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/product/:productId"
-          element={
-            <ProtectedRoute requireAuth={true}>
-              <ProductDetails />
             </ProtectedRoute>
           }
         />
