@@ -3,7 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Input from "./Input";
 import "../assets/Login.css";
-import { signInWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
 import { auth } from "./firebase";
 import emailjs from "@emailjs/browser";
 
@@ -22,7 +25,7 @@ const Login: React.FC = () => {
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [otp, setOtp] = useState("");
   const [generatedOtp, setGeneratedOtp] = useState("");
-  
+
   // Timer States
   const [canResend, setCanResend] = useState(true);
   const [countdown, setCountdown] = useState(0);
@@ -30,7 +33,9 @@ const Login: React.FC = () => {
   // Modal States
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
-  const [modalType, setModalType] = useState<"success" | "error" | "info">("info");
+  const [modalType, setModalType] = useState<"success" | "error" | "info">(
+    "info"
+  );
 
   useEffect(() => {
     if (countdown > 0) {
@@ -47,22 +52,26 @@ const Login: React.FC = () => {
     }
   }, [countdown]);
 
-  const showNotification = (message: string, type: "success" | "error" | "info" = "info") => {
+  const showNotification = (
+    message: string,
+    type: "success" | "error" | "info" = "info"
+  ) => {
     setModalMessage(message);
     setModalType(type);
     setShowModal(true);
   };
 
-  const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
+  const generateOTP = () =>
+    Math.floor(100000 + Math.random() * 900000).toString();
 
   const sendOtpEmail = async (toEmail: string, otpCode: string) => {
     try {
       await emailjs.send(
-        "service_2rwmowf",          
-        "template_13p1rni",          
+        "service_2rwmowf",
+        "template_13p1rni",
         {
           to_email: toEmail.trim(),
-          user_name: "Valued Customer",        
+          user_name: "Valued Customer",
           message: `
             Hello!
 
@@ -80,12 +89,13 @@ const Login: React.FC = () => {
             Stay safe,
 
             The GreenieCart Team
-          `.replace(/^\s+/gm, ''), 
+          `.replace(/^\s+/gm, ""),
         },
-        "g_32Hm9a0fyGUTR2Q" 
+        "g_32Hm9a0fyGUTR2Q"
       );
 
       showNotification("OTP sent! Check your inbox or spam folder.", "success");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error("EmailJS OTP Error:", err);
       setError("Failed to send OTP. Please try again.");
@@ -94,11 +104,11 @@ const Login: React.FC = () => {
 
   const handleResendOtp = async () => {
     if (!canResend) return;
-    
+
     const newOtp = generateOTP();
     setGeneratedOtp(newOtp);
     await sendOtpEmail(email, newOtp);
-    
+
     setCanResend(false);
     setCountdown(RESEND_COOLDOWN);
   };
@@ -141,10 +151,14 @@ const Login: React.FC = () => {
     }
 
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email.trim(), password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email.trim(),
+        password
+      );
       const user = userCredential.user;
 
-      localStorage.removeItem(key); 
+      localStorage.removeItem(key);
 
       if (!user.emailVerified) {
         await sendEmailVerification(user);
@@ -155,6 +169,7 @@ const Login: React.FC = () => {
       }
 
       navigate("/home");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       const attempts = storedAttempts + 1;
       localStorage.setItem(key, attempts.toString());
@@ -222,7 +237,9 @@ const Login: React.FC = () => {
                 label="Enter 6-digit OTP"
                 type="text"
                 value={otp}
-                onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                onChange={(e) =>
+                  setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))
+                }
                 placeholder="000000"
                 maxLength={6}
                 required
@@ -230,7 +247,11 @@ const Login: React.FC = () => {
             )}
 
             <button type="submit" className="login-btn" disabled={loading}>
-              {loading ? "Processing..." : showOtpInput ? "Verify OTP" : "Sign In"}
+              {loading
+                ? "Processing..."
+                : showOtpInput
+                ? "Verify OTP"
+                : "Sign In"}
             </button>
           </form>
 
