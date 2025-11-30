@@ -29,7 +29,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     return (
       <div className="loading-screen">
         <div className="loading-spinner"></div>
-        <p>Loading...</p>
+        <p>GreenieCart</p>
       </div>
     );
   }
