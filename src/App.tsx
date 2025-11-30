@@ -8,10 +8,12 @@ import AddProduct from "./components/AddProduct";
 import EditProduct from "./components/EditProduct";
 import Cart from "./components/Cart";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Chatbot from "./components/Chatbot";
 
 function App() {
   return (
     <BrowserRouter>
+      <Chatbot />
       <Routes>
         {/* Public routes - redirect to home if already logged in */}
         <Route
