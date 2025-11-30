@@ -168,6 +168,8 @@ const Login: React.FC = () => {
         return;
       }
 
+      // Small delay to ensure auth state is synchronized
+      await new Promise((resolve) => setTimeout(resolve, 100));
       navigate("/home");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
