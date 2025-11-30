@@ -14,6 +14,9 @@ import {
   FaChartLine,
   FaSave,
   FaTimes,
+  FaCheckCircle,
+  FaExclamationCircle,
+  FaInfoCircle,
 } from "react-icons/fa";
 import { signOut, updateProfile } from "firebase/auth";
 import {
@@ -30,6 +33,15 @@ import { auth, db } from "./firebase";
 import CountUp from "./CountUp";
 import "../assets/Profile.css";
 import { IconContext } from "react-icons";
+
+// Popup types
+interface PopupState {
+  show: boolean;
+  type: "success" | "error" | "info" | "confirm";
+  message: string;
+  onConfirm?: () => void;
+  confirmText?: string;
+}
 
 interface Product {
   id: string;
@@ -68,6 +80,11 @@ const Profile: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [popup, setPopup] = useState<PopupState>({
+    show: false,
+    type: "info",
+    message: "",
+  });
 
   const closeSidebar = () => setSidebarOpen(false);
 
@@ -100,14 +117,35 @@ const Profile: React.FC = () => {
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const toggleOrdersDropdown = () => setOrdersDropdownOpen(!ordersDropdownOpen);
 
-  // Sign out handler
-  const handleSignOut = async () => {
-    try {
-      await signOut(auth);
-      navigate("/login");
-    } catch (error) {
-      console.error("Error signing out:", error);
-    }
+  // Show popup helper
+  const showPopup = (
+    type: PopupState["type"],
+    message: string,
+    onConfirm?: () => void,
+    confirmText?: string
+  ) => {
+    setPopup({ show: true, type, message, onConfirm, confirmText });
+  };
+
+  const closePopup = () => {
+    setPopup({ ...popup, show: false });
+  };
+
+  // Sign out handler with confirmation
+  const handleSignOut = () => {
+    showPopup(
+      "confirm",
+      "Are you sure you want to sign out?",
+      async () => {
+        try {
+          await signOut(auth);
+          navigate("/login");
+        } catch (error) {
+          console.error("Error signing out:", error);
+        }
+      },
+      "Sign Out"
+    );
   };
 
   // Fetch user data, products, and orders
@@ -274,6 +312,49 @@ const Profile: React.FC = () => {
 
   return (
     <div className="dashboard">
+      {/* Popup Modal */}
+      {popup.show && (
+        <div className="popup-overlay" onClick={closePopup}>
+          <div className="popup-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="popup-close" onClick={closePopup}>
+              <FaTimes />
+            </button>
+            <div className={`popup-icon popup-icon-${popup.type}`}>
+              {popup.type === "success" && <FaCheckCircle />}
+              {popup.type === "error" && <FaExclamationCircle />}
+              {popup.type === "info" && <FaInfoCircle />}
+              {popup.type === "confirm" && <FaExclamationCircle />}
+            </div>
+            <p className="popup-message">{popup.message}</p>
+            <div className="popup-actions">
+              {popup.type === "confirm" ? (
+                <>
+                  <button
+                    className="popup-btn popup-btn-cancel"
+                    onClick={closePopup}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="popup-btn popup-btn-confirm"
+                    onClick={() => {
+                      if (popup.onConfirm) popup.onConfirm();
+                      closePopup();
+                    }}
+                  >
+                    {popup.confirmText || "Confirm"}
+                  </button>
+                </>
+              ) : (
+                <button className="popup-btn popup-btn-ok" onClick={closePopup}>
+                  OK
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Sidebar Overlay */}
       <div
         className={`sidebar-overlay ${sidebarOpen ? "show" : ""}`}

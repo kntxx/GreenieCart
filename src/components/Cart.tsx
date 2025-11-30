@@ -54,9 +54,11 @@ type PaymentMethod = "cod" | "gcash" | "card";
 
 interface PopupState {
   show: boolean;
-  type: "success" | "error" | "info";
+  type: "success" | "error" | "info" | "confirm";
   message: string;
   onClose?: () => void;
+  onConfirm?: () => void;
+  confirmText?: string;
 }
 
 const Cart: React.FC = () => {
@@ -76,9 +78,11 @@ const Cart: React.FC = () => {
   const showPopup = (
     type: PopupState["type"],
     message: string,
-    onClose?: () => void
+    onClose?: () => void,
+    onConfirm?: () => void,
+    confirmText?: string
   ) => {
-    setPopup({ show: true, type, message, onClose });
+    setPopup({ show: true, type, message, onClose, onConfirm, confirmText });
   };
 
   const closePopup = () => {
@@ -111,14 +115,22 @@ const Cart: React.FC = () => {
   const closeSidebar = () => setSidebarOpen(false);
   const toggleOrdersDropdown = () => setOrdersDropdownOpen(!ordersDropdownOpen);
 
-  // Sign out handler
-  const handleSignOut = async () => {
-    try {
-      await signOut(auth);
-      navigate("/login");
-    } catch (error) {
-      console.error("Error signing out:", error);
-    }
+  // Sign out handler with confirmation
+  const handleSignOut = () => {
+    showPopup(
+      "confirm",
+      "Are you sure you want to sign out?",
+      undefined,
+      async () => {
+        try {
+          await signOut(auth);
+          navigate("/login");
+        } catch (error) {
+          console.error("Error signing out:", error);
+        }
+      },
+      "Sign Out"
+    );
   };
 
   // Fetch cart items from Firestore
@@ -372,12 +384,33 @@ const Cart: React.FC = () => {
               {popup.type === "success" && <FaCheckCircle />}
               {popup.type === "error" && <FaExclamationCircle />}
               {popup.type === "info" && <FaInfoCircle />}
+              {popup.type === "confirm" && <FaExclamationCircle />}
             </div>
             <p className="popup-message">{popup.message}</p>
             <div className="popup-actions">
-              <button className="popup-btn popup-btn-ok" onClick={closePopup}>
-                OK
-              </button>
+              {popup.type === "confirm" ? (
+                <>
+                  <button
+                    className="popup-btn popup-btn-cancel"
+                    onClick={closePopup}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="popup-btn popup-btn-confirm"
+                    onClick={() => {
+                      if (popup.onConfirm) popup.onConfirm();
+                      closePopup();
+                    }}
+                  >
+                    {popup.confirmText || "Confirm"}
+                  </button>
+                </>
+              ) : (
+                <button className="popup-btn popup-btn-ok" onClick={closePopup}>
+                  OK
+                </button>
+              )}
             </div>
           </div>
         </div>
