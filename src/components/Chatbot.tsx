@@ -10,6 +10,7 @@ interface Message {
 
 const Chatbot: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [hasNotification, setHasNotification] = useState(true); // Show notification initially
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
@@ -30,10 +31,11 @@ const Chatbot: React.FC = () => {
     scrollToBottom();
   }, [messages]);
 
-  // Focus input when chat opens
+  // Focus input when chat opens and clear notification
   useEffect(() => {
     if (isOpen) {
       inputRef.current?.focus();
+      setHasNotification(false); // Clear notification when chat is opened
     }
   }, [isOpen]);
 
@@ -83,10 +85,13 @@ const Chatbot: React.FC = () => {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="chatbot-fab"
+          className={`chatbot-fab ${hasNotification ? "has-notification" : ""}`}
           aria-label="Open chat"
         >
           <MessageCircle size={24} />
+          {hasNotification && (
+            <span className="chatbot-notification-badge">1</span>
+          )}
         </button>
       )}
 
