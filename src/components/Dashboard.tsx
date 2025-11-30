@@ -53,6 +53,7 @@ interface PopupState {
   type: "success" | "error" | "info" | "confirm";
   message: string;
   onConfirm?: () => void;
+  confirmText?: string;
 }
 
 const Dashboard: React.FC = () => {
@@ -74,9 +75,10 @@ const Dashboard: React.FC = () => {
   const showPopup = (
     type: PopupState["type"],
     message: string,
-    onConfirm?: () => void
+    onConfirm?: () => void,
+    confirmText?: string
   ) => {
-    setPopup({ show: true, type, message, onConfirm });
+    setPopup({ show: true, type, message, onConfirm, confirmText });
   };
 
   const closePopup = () => {
@@ -87,14 +89,21 @@ const Dashboard: React.FC = () => {
   const closeSidebar = () => setSidebarOpen(false);
   const toggleOrdersDropdown = () => setOrdersDropdownOpen(!ordersDropdownOpen);
 
-  // Sign out handler
-  const handleSignOut = async () => {
-    try {
-      await signOut(auth);
-      navigate("/login");
-    } catch (error) {
-      console.error("Error signing out:", error);
-    }
+  // Sign out handler with confirmation
+  const handleSignOut = () => {
+    showPopup(
+      "confirm",
+      "Are you sure you want to sign out?",
+      async () => {
+        try {
+          await signOut(auth);
+          navigate("/login");
+        } catch (error) {
+          console.error("Error signing out:", error);
+        }
+      },
+      "Sign Out"
+    );
   };
 
   // Fetch products from Firestore
@@ -262,7 +271,7 @@ const Dashboard: React.FC = () => {
                       closePopup();
                     }}
                   >
-                    Delete
+                    {popup.confirmText || "Confirm"}
                   </button>
                 </>
               ) : (

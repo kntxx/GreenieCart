@@ -9,6 +9,10 @@ import {
   FaAngleUp,
   FaPlus,
   FaCloudUploadAlt,
+  FaTimes,
+  FaCheckCircle,
+  FaExclamationCircle,
+  FaInfoCircle,
 } from "react-icons/fa";
 import { IconContext } from "react-icons";
 import { collection, addDoc } from "firebase/firestore";
@@ -17,6 +21,15 @@ import { signOut } from "firebase/auth";
 import { db, auth, storage } from "./firebase";
 import Input from "./Input";
 import "../assets/AddProduct.css";
+
+// Popup types
+interface PopupState {
+  show: boolean;
+  type: "success" | "error" | "info" | "confirm";
+  message: string;
+  onConfirm?: () => void;
+  confirmText?: string;
+}
 
 interface ProductForm {
   name: string;
@@ -33,6 +46,11 @@ const AddProduct: React.FC = () => {
   const [error, setError] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>("");
+  const [popup, setPopup] = useState<PopupState>({
+    show: false,
+    type: "info",
+    message: "",
+  });
 
   const [formData, setFormData] = useState<ProductForm>({
     name: "",
@@ -44,14 +62,35 @@ const AddProduct: React.FC = () => {
   const closeSidebar = () => setSidebarOpen(false);
   const toggleOrdersDropdown = () => setOrdersDropdownOpen(!ordersDropdownOpen);
 
-  // Sign out handler
-  const handleSignOut = async () => {
-    try {
-      await signOut(auth);
-      navigate("/login");
-    } catch (error) {
-      console.error("Error signing out:", error);
-    }
+  // Show popup helper
+  const showPopup = (
+    type: PopupState["type"],
+    message: string,
+    onConfirm?: () => void,
+    confirmText?: string
+  ) => {
+    setPopup({ show: true, type, message, onConfirm, confirmText });
+  };
+
+  const closePopup = () => {
+    setPopup({ ...popup, show: false });
+  };
+
+  // Sign out handler with confirmation
+  const handleSignOut = () => {
+    showPopup(
+      "confirm",
+      "Are you sure you want to sign out?",
+      async () => {
+        try {
+          await signOut(auth);
+          navigate("/login");
+        } catch (error) {
+          console.error("Error signing out:", error);
+        }
+      },
+      "Sign Out"
+    );
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -146,6 +185,49 @@ const AddProduct: React.FC = () => {
 
   return (
     <div className="dashboard">
+      {/* Popup Modal */}
+      {popup.show && (
+        <div className="popup-overlay" onClick={closePopup}>
+          <div className="popup-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="popup-close" onClick={closePopup}>
+              <FaTimes />
+            </button>
+            <div className={`popup-icon popup-icon-${popup.type}`}>
+              {popup.type === "success" && <FaCheckCircle />}
+              {popup.type === "error" && <FaExclamationCircle />}
+              {popup.type === "info" && <FaInfoCircle />}
+              {popup.type === "confirm" && <FaExclamationCircle />}
+            </div>
+            <p className="popup-message">{popup.message}</p>
+            <div className="popup-actions">
+              {popup.type === "confirm" ? (
+                <>
+                  <button
+                    className="popup-btn popup-btn-cancel"
+                    onClick={closePopup}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="popup-btn popup-btn-confirm"
+                    onClick={() => {
+                      if (popup.onConfirm) popup.onConfirm();
+                      closePopup();
+                    }}
+                  >
+                    {popup.confirmText || "Confirm"}
+                  </button>
+                </>
+              ) : (
+                <button className="popup-btn popup-btn-ok" onClick={closePopup}>
+                  OK
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Sidebar Overlay */}
       <div
         className={`sidebar-overlay ${sidebarOpen ? "show" : ""}`}
