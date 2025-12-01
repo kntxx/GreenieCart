@@ -22,7 +22,6 @@ import {
   getCountFromServer,
 } from "firebase/firestore";
 import { auth, db } from "./firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
 
 
 const Register: React.FC = () => {
