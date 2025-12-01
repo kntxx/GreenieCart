@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // src/types/paymongo.d.ts
 declare module 'paymongo' {
   interface PayMongoClient {
