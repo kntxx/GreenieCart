@@ -329,19 +329,35 @@ const EditProduct: React.FC = () => {
                   {ordersDropdownOpen ? <FaAngleUp /> : <FaAngleDown />}
                 </span>
               </li>
-              {ordersDropdownOpen && (
-                <ul className="dropdown">
-                  <li
-                    onClick={() => {
-                      navigate("/cart");
-                      closeSidebar();
-                    }}
-                  >
-                    Your Cart
-                  </li>
-                  <li onClick={() => navigate("/myorders")}>Your Orders</li>
-                </ul>
-              )}
+               {ordersDropdownOpen && (
+  <ul className="dropdown">
+    <li
+      onClick={() => {
+        navigate("/cart");
+        closeSidebar();
+      }}
+    >
+      Your Cart
+    </li>
+    <li
+      onClick={() => {
+        navigate("/myorders");
+        closeSidebar();
+      }}
+    >
+      Your Orders
+    </li>
+    <li
+      onClick={() => {
+        navigate("/orders-received");  
+        closeSidebar();
+      }}
+      style={{  }}
+    >
+      Orders Received
+    </li>
+  </ul>
+)}
               <li className="profile" onClick={() => navigate("/profile")}>
                 <span className="left">
                   <FaUser />

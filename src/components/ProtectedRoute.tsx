@@ -6,7 +6,7 @@ import { auth } from "./firebase";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  requireAuth?: boolean; // true = must be logged in, false = must be logged out
+  requireAuth?: boolean; 
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
@@ -17,13 +17,23 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
-    });
+  const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+    if (currentUser) {
+      await currentUser.reload(); 
+      if (!currentUser.emailVerified) {
+        await auth.signOut();
+        setUser(null);
+      } else {
+        setUser(currentUser);
+      }
+    } else {
+      setUser(null);
+    }
+    setLoading(false);
+  });
 
-    return () => unsubscribe();
-  }, []);
+  return () => unsubscribe();
+}, []);
 
   if (loading) {
     return (
@@ -34,12 +44,12 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     );
   }
 
-  // If route requires auth and user is not logged in, redirect to login
   if (requireAuth && !user) {
     return <Navigate to="/login" replace />;
   }
 
-  // If route requires NO auth (login/register) and user IS logged in, redirect to home
+
+  
   if (!requireAuth && user) {
     return <Navigate to="/home" replace />;
   }
