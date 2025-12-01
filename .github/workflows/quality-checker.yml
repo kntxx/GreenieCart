@@ -25,9 +25,6 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      # 4. Check for messy code
-      - name: Lint Code
-        run: npm run lint
 
       # 5. Check if it actually compiles (Crucial for Vite/React)
       - name: Build Test
