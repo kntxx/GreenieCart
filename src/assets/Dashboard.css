@@ -1,27 +1,22 @@
-/* ============================================
-   DASHBOARD - iOS 16/17/18 INSPIRED DESIGN
-   GreenieCart - Apple Human Interface Guidelines
-   ============================================ */
 
-/* ---------- iOS Design Tokens ---------- */
 :root {
-  /* iOS Colors */
+
   --ios-green: #34c759;
   --ios-green-light: #e9fdf1;
   --ios-green-dark: #248a3d;
   --ios-blue: #0a84ff;
   --ios-red: #ff3b30;
 
-  /* iOS Neutrals */
+
   --ios-bg: #f2f4f7;
   --ios-card: rgba(255, 255, 255, 0.85);
   --ios-frosted: rgba(255, 255, 255, 0.72);
 
-  /* iOS Text */
+ 
   --ios-text-primary: #1c1c1e;
   --ios-text-secondary: #8e8e93;
 
-  /* Legacy mappings */
+
   --bg: var(--ios-bg);
   --sidebar-bg: linear-gradient(180deg, #1b5e3b 0%, #166534 50%, #134e2b 100%);
   --accent: var(--ios-blue);
@@ -30,7 +25,7 @@
   --success: var(--ios-green);
 }
 
-/* Reset with iOS defaults */
+
 * {
   box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
@@ -50,7 +45,6 @@ body {
   color: var(--ios-text-primary);
 }
 
-/* ---------- Layout ---------- */
 .dashboard {
   display: flex;
   width: 100vw;
@@ -59,7 +53,7 @@ body {
   background-attachment: fixed;
 }
 
-/* ---------- iOS Frosted Sidebar ---------- */
+
 .sidebar {
   width: 240px;
   background: var(--sidebar-bg);
@@ -88,13 +82,38 @@ body {
 }
 
 .sidebar-logo {
-  font-size: 22px;
-  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
   padding: 24px 20px;
-  text-align: center;
-  letter-spacing: -0.5px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+}
+
+.sidebar-logo-img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 3px solid #34c759;
+  padding: 0;
+  background: #fff;
+  box-shadow: 0 6px 20px rgba(52, 199, 89, 0.25);
+}
+
+.sidebar-logo-text {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #34c759;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Optional: Glow effect when hovered */
+.sidebar-logo:hover .sidebar-logo-img {
+  transform: scale(1.08);
+  box-shadow: 0 8px 20px rgba(52, 199, 89, 0.3);
 }
 
 .sidebar nav {
@@ -845,6 +864,10 @@ body {
   }
 }
 
+
+
+
+
 @media (max-width: 480px) {
   .top-navbar h2 {
     font-size: 0.85rem;
@@ -867,16 +890,7 @@ body {
     font-size: 13px;
   }
 
-  .add-product-btn span,
-  .cart-btn span {
-    display: none;
-  }
-
-  .add-product-btn,
-  .cart-btn {
-    padding: 12px;
-    border-radius: 12px;
-  }
+  
 }
 
 /* ---------- iOS Popup Modal ---------- */
@@ -1290,11 +1304,7 @@ body {
     font-size: 0.95rem;
   }
 
-  /* Buttons with icons only */
-  .add-product-btn span,
-  .cart-btn span {
-    display: none;
-  }
+ 
 
   .add-product-btn,
   .cart-btn {

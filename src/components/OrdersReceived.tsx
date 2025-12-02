@@ -15,6 +15,7 @@ interface OrderItem {
   buyerName: string;
   buyerPhone?: string;        
   buyerAddress?: string;      
+  buyerNotes?: string;
   productName: string;
   productImage: string;
   quantity: number;
@@ -45,6 +46,27 @@ const navigate = useNavigate();
       message: "",
     });
   
+
+const thisMonth = new Date();
+thisMonth.setDate(1);
+thisMonth.setHours(0, 0, 0, 0);
+
+const monthlyEarnings = orders
+  .filter(o => o.orderedAt?.toDate?.() >= thisMonth)
+  .reduce((sum, o) => sum + o.totalPrice, 0);
+
+
+
+   
+const today = new Date().setHours(0, 0, 0, 0);
+const todayOrders = orders.filter(o => 
+  o.orderedAt?.toDate?.() >= today
+);
+
+const totalSalesToday = todayOrders.reduce((sum, o) => sum + o.totalPrice, 0);
+const totalOrders = orders.length;
+const pendingToShip = orders.filter(o => o.status === "pending" || o.status === "paid").length;
+const completedOrders = orders.filter(o => o.status === "completed").length;
  
     const showPopup = (
       type: PopupState["type"],
@@ -112,7 +134,7 @@ useEffect(() => {
     return;
   }
 
-  // 1. Get seller's product IDs (real-time)
+
   const productsQuery = query(
     collection(db, "products"),
     where("createdBy", "==", user.uid)
@@ -129,10 +151,10 @@ useEffect(() => {
     const receivedOrders: OrderItem[] = [];
     const unsubscribers: (() => void)[] = [];
 
-    // 2. Listen to ALL users' orders (but only get relevant items)
+   
     const usersQuery = query(collection(db, "users"));
     const usersUnsub = onSnapshot(usersQuery, (usersSnap) => {
-      // Clear previous listeners if any
+    
       unsubscribers.forEach(unsub => unsub());
       unsubscribers.length = 0;
 
@@ -148,7 +170,7 @@ useEffect(() => {
           ordersSnap.docs.forEach((orderDoc) => {
             const orderData = orderDoc.data();
 
-            // Update buyer info if deliveryDetails exists
+           
             if (orderData.deliveryDetails?.fullName) {
               buyerName = orderData.deliveryDetails.fullName;
               buyerPhone = orderData.deliveryDetails.phone || "";
@@ -163,13 +185,13 @@ useEffect(() => {
               sellerProductIds.includes(item.productId)
             );
 
-            // Remove old entries for this orderId + buyerId
+           
             const existingIndex = receivedOrders.findIndex(
               o => o.id === orderDoc.id && o.buyerId === buyerId
             );
             if (existingIndex > -1) receivedOrders.splice(existingIndex, matchingItems.length);
 
-            // Add new ones
+         
             matchingItems.forEach((item: any) => {
               receivedOrders.push({
                 id: orderDoc.id,
@@ -177,6 +199,7 @@ useEffect(() => {
                 buyerName,
                 buyerPhone,
                 buyerAddress,
+                buyerNotes: orderData.deliveryDetails?.notes || "",
                 productName: item.name,
                 productImage: item.image,
                 quantity: item.quantity,
@@ -188,7 +211,7 @@ useEffect(() => {
             });
           });
 
-          // Sort by latest
+      
           receivedOrders.sort((a, b) =>
             (b.orderedAt?.toMillis?.() || 0) - (a.orderedAt?.toMillis?.() || 0)
           );
@@ -200,7 +223,7 @@ useEffect(() => {
       });
     });
 
-    // Cleanup on unmount
+   
     return () => {
       usersUnsub();
       unsubscribers.forEach(unsub => unsub());
@@ -209,7 +232,6 @@ useEffect(() => {
 
   setLoading(false);
 
-  // Cleanup product listener
   return () => unsubscribeProducts();
 }, []);
   
@@ -266,7 +288,21 @@ useEffect(() => {
     
           {/* Sidebar */}
           <aside className={`sidebar ${sidebarOpen ? "open" : "closed"}`}>
-            <h2 className="sidebar-logo">GreenieCart</h2>
+              <div 
+  className="sidebar-logo"
+  onClick={() => {
+    navigate("/home");
+    closeSidebar();  
+  }}
+  style={{ cursor: "pointer" }} 
+>
+  <img 
+    src="/logo.jpg" 
+    alt="GreenieCart Logo" 
+    className="sidebar-logo-img"
+  />
+  <span className="sidebar-logo-text">GreenieCart</span>
+</div>
             <IconContext.Provider value={{ style: { marginRight: "10px" } }}>
               <nav>
                 <ul>
@@ -322,8 +358,57 @@ useEffect(() => {
         <span className="menu-icon" onClick={toggleSidebar}>
     <FaBars />
   </span>
+
+
         <h2>Orders Received</h2>
       </header>
+
+
+
+
+  <div className="summary-cards">
+  <div className="summary-card total-sales">
+    <div className="summary-icon">₱</div>
+    <div className="summary-info">
+      <span className="summary-label">Total Sales Today</span>
+      <span className="summary-value">₱{totalSalesToday.toLocaleString()}</span>
+    </div>
+  </div>
+
+
+<div className="summary-card monthly-earnings">
+  <div className="summary-icon">Chart</div>
+  <div className="summary-info">
+    <span className="summary-label">This Month</span>
+    <span className="summary-value">₱{monthlyEarnings.toLocaleString()}</span>
+  </div>
+</div>
+
+  <div className="summary-card pending-orders">
+    <div className="summary-icon pending">!</div>
+    <div className="summary-info">
+      <span className="summary-label">Pending to Ship</span>
+      <span className="summary-value">{pendingToShip}</span>
+    </div>
+  </div>
+
+  <div className="summary-card total-orders">
+    <div className="summary-icon"><FaShoppingCart /></div>
+    <div className="summary-info">
+      <span className="summary-label">Total Orders</span>
+      <span className="summary-value">{totalOrders}</span>
+    </div>
+  </div>
+
+  <div className="summary-card completed-orders">
+    <div className="summary-icon success"><FaCheckCircle /></div>
+    <div className="summary-info">
+      <span className="summary-label">Completed</span>
+      <span className="summary-value">{completedOrders}</span>
+    </div>
+  </div>
+</div>
+
 
       <div className="orders-container">
           {loading ? (
@@ -337,7 +422,7 @@ useEffect(() => {
             <div className="orders-list">
               {orders.map((order) => (
                 <div key={order.id} className="order-card">
-                  {/* Header: Buyer + Date */}
+                 
                   <div className="order-header">
                     <div className="buyer-info">
                       <FaUser color="#8e8e93" />
@@ -346,8 +431,18 @@ useEffect(() => {
                         <span className="buyer-address">
                           {order.buyerAddress || "Address not provided"}
                         </span>
+
+
+                         {order.buyerNotes && (
+                        <div className="delivery-notes">
+                         <strong>Note:</strong> {order.buyerNotes}
+                        </div>
+                      )}
                       </div>
                     </div>
+
+
+
                     <div className="order-date">
                       <FaCalendarAlt color="#8e8e93" />
                       <span>{order.orderedAt?.toDate().toLocaleDateString("en-US", {
@@ -392,7 +487,7 @@ useEffect(() => {
     </span>
   </div>
 
-  {/* Show button only if not yet shipped or completed */}
+ 
   {order.status === "pending" || order.status === "paid" ? (
     <button
       className="btn-ship"

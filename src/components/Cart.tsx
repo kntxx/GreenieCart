@@ -110,7 +110,7 @@ const Cart: React.FC = () => {
     }, "Sign Out");
   };
 
-  // Fetch cart items
+
   useEffect(() => {
     const fetchCartItems = async () => {
       const user = auth.currentUser;
@@ -149,19 +149,19 @@ const Cart: React.FC = () => {
       const fullName = `${data.firstName || ""} ${data.lastName || ""}`.trim();
       const phone = data.contact || "";
 
-      // Construct complete address with Province
+    
       const houseStreet = [addr.houseNo, addr.street].filter(Boolean).join(", ") || "";
       const barangay = addr.barangay ? `Brgy. ${addr.barangay}` : "";
       const city = addr.city || "";
-      const province = addr.province || ""; // ← KINI ANG KULANG KARON
+      const province = addr.province || ""; 
       const zip = addr.zipCode ? `${addr.zipCode}` : "";
 
-      // Build address parts
+   
       const addressParts = [
         houseStreet,
         barangay,
         city,
-        province,        // ← GIDAPIG NA!
+        province,        
         zip
       ].filter(Boolean);
 
@@ -181,7 +181,7 @@ const Cart: React.FC = () => {
   }
 };
 
-  // Toggle individual item
+
   const toggleItem = (id: string) => {
     setSelectedItems(prev => {
       const newSet = new Set(prev);
@@ -217,13 +217,13 @@ const Cart: React.FC = () => {
     ));
   };
 
-  // Open checkout modal → auto-fill delivery
+ 
   const openCheckoutModal = () => {
     if (selectedCartItems.length === 0) {
       showPopup("info", "Please select at least one item to checkout.");
       return;
     }
-    fetchUserProfileAndFillDelivery(); // ← THIS IS THE NEW PART
+    fetchUserProfileAndFillDelivery(); 
     setShowCheckoutModal(true);
     setCheckoutStep(1);
   };
@@ -345,7 +345,7 @@ const Cart: React.FC = () => {
 
   return (
     <div className="dashboard">
-      {/* Popup Modal, Sidebar, Main Content — everything is exactly the same as your original code */}
+   
       {popup.show && (
         <div className="popup-overlay" onClick={closePopup}>
           <div className="popup-modal" onClick={(e) => e.stopPropagation()}>
@@ -390,7 +390,21 @@ const Cart: React.FC = () => {
 
       {/* Sidebar */}
       <aside className={`sidebar ${sidebarOpen ? "open" : "closed"}`}>
-        <h2 className="sidebar-logo">GreenieCart</h2>
+         <div 
+  className="sidebar-logo"
+  onClick={() => {
+    navigate("/home");
+    closeSidebar();  
+  }}
+  style={{ cursor: "pointer" }} 
+>
+  <img 
+    src="/logo.jpg" 
+    alt="GreenieCart Logo" 
+    className="sidebar-logo-img"
+  />
+  <span className="sidebar-logo-text">GreenieCart</span>
+</div>
         <IconContext.Provider value={{ style: { marginRight: "10px" } }}>
           <nav>
             <ul>
