@@ -9,7 +9,8 @@ import {
 } from "react-icons/fa";
 import Input from "./Input";
 import "../assets/Register.css";
-
+import { useEffect } from "react";
+import { onAuthStateChanged } from "firebase/auth";
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
@@ -21,6 +22,7 @@ import {
   getCountFromServer,
 } from "firebase/firestore";
 import { auth, db } from "./firebase";
+
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
@@ -126,7 +128,12 @@ const Register: React.FC = () => {
       const user = userCredential.user;
 
       // 2. Send verification email
-      await sendEmailVerification(user);
+     // Sa Register.tsx → handleSubmit()
+await sendEmailVerification(user, {
+  url: window.location.origin, // ← KINI ANG MAGIC LINE!
+  // or hardcode for testing:
+  // url: "http://localhost:3000"
+});
 
       // 3. Generate custom USER001, USER002, etc.
       const usersRef = collection(db, "users");
@@ -164,7 +171,46 @@ const Register: React.FC = () => {
     }
   };
 
-  // SUCCESS SCREEN - Full overlay
+
+useEffect(() => {
+  if (!success) return;
+
+  const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      // ALWAYS RELOAD para ma-update ang emailVerified status
+      await user.reload();
+
+      if (user.emailVerified) {
+        // SUCCESS! Auto login
+        setSuccess(false);
+
+        // Optional: Update Firestore nga verified na
+        await setDoc(doc(db, "users", user.uid), {
+          emailVerified: true,
+          verifiedAt: new Date(),
+        }, { merge: true });
+
+        // Navigate to home
+        navigate("/home", { replace: true });
+      }
+    }
+  });
+
+  // Poll every 2 seconds (faster detection)
+  const interval = setInterval(() => {
+    auth.currentUser?.reload();
+  }, 2000);
+
+  // Cleanup
+  return () => {
+    unsubscribe();
+    clearInterval(interval);
+  };
+}, [success, navigate]);
+
+
+
+  // SUCCESS SCREEN (NOW INSIDE RETURN!)
   if (success) {
     return (
       <div className="register-wrapper success-screen">
@@ -174,27 +220,93 @@ const Register: React.FC = () => {
           </div>
           <h1>Check Your Email!</h1>
           <p>
-            We sent a verification link to:
+            Verification link sent to:
             <br />
             <strong>{formData.email}</strong>
           </p>
-          <p style={{ color: "#666", fontSize: "0.95rem", margin: "1rem 0" }}>
-            Click the link in the email to activate your account.
-            <br />
-            Can't find it? Check your spam/junk folder.
-          </p>
-          <button
-            className="register-btn"
-            onClick={() => navigate("/login")}
-            style={{ marginTop: "1.5rem" }}
-          >
-            Go to Login
-          </button>
+
+          <div style={{
+            background: "#fefce8",
+            padding: "16px",
+            borderRadius: "12px",
+            margin: "20px 0",
+            border: "1px solid #f59e0b"
+          }}>
+            <p style={{ margin: 0, color: "#92400e", fontWeight: "600" }}>
+              You cannot log in until you verify your email.
+              <br />
+              <span style={{ fontSize: "0.9rem", fontWeight: "normal" }}>
+                We will automatically log you in once verified!
+              </span>
+            </p>
+          </div>
+
+    <div className="success-actions">
+  {/* RESEND EMAIL */}
+  <button
+    className="resend-btn"
+    onClick={async () => {
+      if (auth.currentUser) {
+        setLoading(true);
+        await sendEmailVerification(auth.currentUser, {
+          url: window.location.origin,
+        });
+        setLoading(false);
+        alert("Verification email sent again!");
+      }
+    }}
+    disabled={loading}
+  >
+    {loading ? "Sending..." : "Resend Email"}
+  </button>
+
+  {/* OPEN EMAIL PROVIDER */}
+  <button
+    className="open-email-btn"
+    onClick={() => {
+      const domain = formData.email.split("@")[1].toLowerCase();
+      const providers: Record<string, string> = {
+        "gmail.com": "https://mail.google.com",
+        "yahoo.com": "https://mail.yahoo.com",
+        "outlook.com": "https://outlook.live.com",
+        "hotmail.com": "https://outlook.live.com",
+        "icloud.com": "https://www.icloud.com/mail",
+      };
+      window.open(providers[domain] || `https://${domain}`, "_blank");
+    }}
+  >
+    Open Email
+  </button>
+
+  {/* BACK TO LOGIN (NEW!) */}
+  <button
+    className="back-to-login-btn"
+    onClick={() => {
+      setSuccess(false);
+      navigate("/login", { replace: true });
+    }}
+    style={{
+      marginTop: "12px",
+      background: "transparent",
+      color: "#666",
+      border: "1px solid #ddd",
+      padding: "12px 20px",
+      borderRadius: "12px",
+      fontSize: "0.95rem",
+      cursor: "pointer",
+    }}
+  >
+    Back to Login
+  </button>
+</div>
+
+          <div style={{ marginTop: "20px", color: "#666", fontSize: "0.9rem" }}>
+            <p>Checking verification every 3 seconds...</p>
+          </div>
         </div>
       </div>
     );
   }
-
   // MAIN REGISTRATION FORM
   return (
     <div className="register-wrapper">

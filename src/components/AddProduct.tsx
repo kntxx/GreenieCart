@@ -22,7 +22,7 @@ import { db, auth, storage } from "./firebase";
 import Input from "./Input";
 import "../assets/AddProduct.css";
 
-// Popup types
+
 interface PopupState {
   show: boolean;
   type: "success" | "error" | "info" | "confirm";
@@ -62,7 +62,7 @@ const AddProduct: React.FC = () => {
   const closeSidebar = () => setSidebarOpen(false);
   const toggleOrdersDropdown = () => setOrdersDropdownOpen(!ordersDropdownOpen);
 
-  // Show popup helper
+  
   const showPopup = (
     type: PopupState["type"],
     message: string,
@@ -76,7 +76,6 @@ const AddProduct: React.FC = () => {
     setPopup({ ...popup, show: false });
   };
 
-  // Sign out handler with confirmation
   const handleSignOut = () => {
     showPopup(
       "confirm",
@@ -127,7 +126,7 @@ const AddProduct: React.FC = () => {
       return;
     }
 
-    // Validate fields
+    
     if (!formData.name.trim() || !formData.price || !formData.stock) {
       setError("All fields are required.");
       setLoading(false);
@@ -156,7 +155,7 @@ const AddProduct: React.FC = () => {
     }
 
     try {
-      // Upload image to Firebase Storage
+     
       const timestamp = Date.now();
       const fileName = `products/${user.uid}/${timestamp}_${imageFile.name}`;
       const storageRef = ref(storage, fileName);
@@ -173,7 +172,6 @@ const AddProduct: React.FC = () => {
         createdAt: new Date(),
       });
 
-      // Redirect to dashboard after success
       navigate("/home");
     } catch (error) {
       console.error("Error adding product:", error);
@@ -260,26 +258,35 @@ const AddProduct: React.FC = () => {
                   {ordersDropdownOpen ? <FaAngleUp /> : <FaAngleDown />}
                 </span>
               </li>
-              {ordersDropdownOpen && (
-                <ul className="dropdown">
-                  <li
-                    onClick={() => {
-                      navigate("/cart");
-                      closeSidebar();
-                    }}
-                  >
-                    Your Cart
-                  </li>
-                  <li
-                    onClick={() => {
-                      navigate("/myorders");
-                      closeSidebar();
-                    }}
-                  >
-                    Your Orders
-                  </li>
-                </ul>
-              )}
+               {ordersDropdownOpen && (
+  <ul className="dropdown">
+    <li
+      onClick={() => {
+        navigate("/cart");
+        closeSidebar();
+      }}
+    >
+      Your Cart
+    </li>
+    <li
+      onClick={() => {
+        navigate("/myorders");
+        closeSidebar();
+      }}
+    >
+      Your Orders
+    </li>
+    <li
+      onClick={() => {
+        navigate("/orders-received");  
+        closeSidebar();
+      }}
+      style={{  }}
+    >
+      Orders Received
+    </li>
+  </ul>
+)}
               <li
                 className="profile"
                 onClick={() => {

@@ -1,7 +1,4 @@
-/* ============================================
-   CART - iOS 16/17/18 INSPIRED DESIGN
-   GreenieCart - Apple Human Interface Guidelines
-   ============================================ */
+
 
 :root {
   /* iOS Colors */
@@ -1131,9 +1128,8 @@ body {
 }
 
 .popup-modal {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: white;
+
   border-radius: 20px;
   padding: 32px;
   max-width: 380px;
@@ -1264,4 +1260,177 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.25);
+}
+
+
+
+
+@media (max-width: 768px) {
+  .cart-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Form Controls */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 14px;
+  background: rgba(142,142,147,0.08);
+  font-size: 16px;
+  transition: all 0.25s var(--ease);
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--ios-green);
+  box-shadow: 0 0 0 4px rgba(52,199,89,0.15);
+  background: white;
+}
+
+.form-row {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+/* Checkout Steps - Horizontal & Responsive */
+.checkout-steps {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 32px;
+  overflow-x: auto;
+  padding-bottom: 16px;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 70px;
+}
+
+.step-number {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(142,142,147,0.15);
+  color: var(--text-secondary);
+  display: grid;
+  place-items: center;
+  font-weight: 600;
+  transition: all 0.35s var(--ease);
+}
+
+.step.active .step-number {
+  background: var(--ios-green);
+  color: white;
+  transform: scale(1.title);
+}
+
+.step-line {
+  height: 3px;
+  flex: 1;
+  background: rgba(142,142,147,0.2);
+  border-radius: 2px;
+  margin-top: 20px;
+}
+
+.step-line.active {
+  background: var(--ios-green);
+}
+
+/* Desktop Sidebar */
+@media (min-width: 992px) {
+  .dashboard {
+    grid-template-columns: 260px 1fr;
+  }
+
+  .sidebar {
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+    transform: translateX(0) !important;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.08);
+  }
+
+  .menu-icon,
+  .sidebar-overlay {
+    display: none !important;
+  }
+
+  .main {
+    padding: 32px;
+  }
+
+  .top-navbar {
+    border-radius: 24px;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleUp {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* Popup Modal */
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(10px);
+  display: grid;
+  place-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.25s var(--ease);
+}
+
+.popup-modal {
+  background: white;
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 32px;
+  width: min(400px, 90vw);
+  text-align: center;
+  animation: scaleUp 0.35s var(--ease);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background:rgba(0,0,0,0.3);
 }

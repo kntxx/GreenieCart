@@ -20,7 +20,9 @@ import {
   FaInfoCircle,
 } from "react-icons/fa";
 import { IconContext } from "react-icons";
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
+
+import { collection,  query, orderBy, onSnapshot, doc,  updateDoc } from "firebase/firestore";
+
 import { signOut } from "firebase/auth";
 import { db, auth } from "./firebase";
 import "../assets/MyOrder.css";
@@ -83,7 +85,7 @@ const MyOrder: React.FC = () => {
     setExpandedOrder(expandedOrder === orderId ? null : orderId);
   };
 
-  // Show popup helper
+  
   const showPopup = (
     type: PopupState["type"],
     message: string,
@@ -97,7 +99,7 @@ const MyOrder: React.FC = () => {
     setPopup({ ...popup, show: false });
   };
 
-  // Sign out handler with confirmation
+  
   const handleSignOut = () => {
     showPopup(
       "confirm",
@@ -114,44 +116,45 @@ const MyOrder: React.FC = () => {
     );
   };
 
-  // Fetch orders from Firestore
-  useEffect(() => {
-    const fetchOrders = async () => {
-      const user = auth.currentUser;
-      if (!user) {
-        setLoading(false);
-        return;
-      }
+  
+useEffect(() => {
+  const user = auth.currentUser;
+  if (!user) {
+    setLoading(false);
+    return;
+  }
 
-      try {
-        const ordersRef = collection(db, "orders", user.uid, "items");
-        const q = query(ordersRef, orderBy("createdAt", "desc"));
-        const querySnapshot = await getDocs(q);
-        const ordersData: Order[] = [];
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          ordersData.push({
-            id: doc.id,
-            items: data.items || [],
-            total: data.total || 0,
-            deliveryDetails: data.deliveryDetails || null,
-            paymentMethod: data.paymentMethod || null,
-            status: data.status || "pending",
-            createdAt: data.createdAt?.toDate() || new Date(),
-          });
-        });
-        setOrders(ordersData);
-      } catch (error) {
-        console.error("Error fetching orders:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const ordersRef = collection(db, "orders", user.uid, "items");
+  const q = query(ordersRef, orderBy("createdAt", "desc"));
 
-    fetchOrders();
-  }, []);
+  const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    const ordersData: Order[] = [];
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      ordersData.push({
+        id: doc.id,
+        items: data.items || [],
+        total: data.total || 0,
+        deliveryDetails: data.deliveryDetails || null,
+        paymentMethod: data.paymentMethod || null,
+        status: data.status || "pending",
+        createdAt: data.createdAt?.toDate() || new Date(),
+      });
+    });
+    setOrders(ordersData);
+    setLoading(false);
+  }, (error) => {
+    console.error("Error listening to orders:", error);
+    setLoading(false);
+  });
 
-  // Format date
+  
+  return () => unsubscribe();
+}, []);
+
+
+
+ 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString("en-US", {
       year: "numeric",
@@ -162,7 +165,7 @@ const MyOrder: React.FC = () => {
     });
   };
 
-  // Get payment method label and icon
+ 
   const getPaymentInfo = (method?: PaymentMethod) => {
     switch (method) {
       case "cod":
@@ -174,6 +177,29 @@ const MyOrder: React.FC = () => {
       default:
         return { label: "Not specified", icon: null };
     }
+  };
+
+    // MARK AS COMPLETED - Para sa buyer
+  const markAsCompleted = async (orderId: string) => {
+    showPopup(
+      "confirm",
+      "Did you receive your order in good condition?",
+      async () => {
+        try {
+          const orderRef = doc(db, "orders", auth.currentUser!.uid, "items", orderId);
+          await updateDoc(orderRef, {
+            status: "completed",
+            completedAt: new Date(),
+          });
+
+          showPopup("success", "Thank you! Order marked as completed!");
+        } catch (err) {
+          console.error("Error marking as completed:", err);
+          showPopup("error", "Failed to confirm. Please try again.");
+        }
+      },
+      "Yes, Received!"
+    );
   };
 
   return (
@@ -254,25 +280,34 @@ const MyOrder: React.FC = () => {
                 </span>
               </li>
               {ordersDropdownOpen && (
-                <ul className="dropdown">
-                  <li
-                    onClick={() => {
-                      navigate("/cart");
-                      closeSidebar();
-                    }}
-                  >
-                    Your Cart
-                  </li>
-                  <li
-                    onClick={() => {
-                      navigate("/myorders");
-                      closeSidebar();
-                    }}
-                  >
-                    Your Orders
-                  </li>
-                </ul>
-              )}
+  <ul className="dropdown">
+    <li
+      onClick={() => {
+        navigate("/cart");
+        closeSidebar();
+      }}
+    >
+      Your Cart
+    </li>
+    <li
+      onClick={() => {
+        navigate("/myorders");
+        closeSidebar();
+      }}
+    >
+      Your Orders
+    </li>
+    <li
+      onClick={() => {
+        navigate("/orders-received");  
+        closeSidebar();
+      }}
+      style={{  }}
+    >
+      Orders Received
+    </li>
+  </ul>
+)}
               <li
                 className="profile"
                 onClick={() => {
@@ -293,7 +328,7 @@ const MyOrder: React.FC = () => {
         </IconContext.Provider>
       </aside>
 
-      {/* Main Content */}
+      
       <main className={`main ${sidebarOpen ? "sidebar-open" : ""}`}>
         <IconContext.Provider value={{ style: { marginRight: "8px" } }}>
           <header className="top-navbar">
@@ -303,7 +338,7 @@ const MyOrder: React.FC = () => {
             <h2>MY ORDERS</h2>
           </header>
 
-          {/* Orders Section */}
+        
           <div className="orders-container">
             <h3>
               <FaBox /> Order History
@@ -347,24 +382,20 @@ const MyOrder: React.FC = () => {
                           {formatDate(order.createdAt)}
                         </span>
                       </div>
-                      <div className="order-header-right">
-                        <div className="order-total">
-                          <span>₱{order.total.toLocaleString()}</span>
-                        </div>
-                        <span className="expand-icon">
-                          {expandedOrder === order.id ? (
-                            <FaChevronUp />
-                          ) : (
-                            <FaChevronDown />
-                          )}
-                        </span>
-                      </div>
+                      <div className="order-header-right" data-status={order.status || "pending"}>
+  <div className="order-total">
+    <span>₱{order.total.toLocaleString()}</span>
+  </div>
+  <span className="expand-icon">
+    {expandedOrder === order.id ? <FaChevronUp /> : <FaChevronDown />}
+  </span>
+</div>
                     </div>
 
-                    {/* Expanded Order Details */}
+                   
                     {expandedOrder === order.id && (
                       <div className="order-expanded">
-                        {/* Delivery Details */}
+                       
                         {order.deliveryDetails && (
                           <div className="order-section">
                             <h4>
@@ -408,30 +439,54 @@ const MyOrder: React.FC = () => {
 
                         {/* Order Items */}
                         <div className="order-section">
-                          <h4>
-                            <FaBox /> Items Ordered
-                          </h4>
-                          <div className="order-items">
-                            {order.items.map((item, index) => (
-                              <div key={index} className="order-item">
-                                <img src={item.image} alt={item.name} />
-                                <div className="item-details">
-                                  <span className="item-name">{item.name}</span>
-                                  <span className="item-price">
-                                    ₱{item.price.toLocaleString()} ×{" "}
-                                    {item.quantity}
-                                  </span>
-                                </div>
-                                <div className="item-subtotal">
-                                  ₱
-                                  {(
-                                    item.price * item.quantity
-                                  ).toLocaleString()}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
+  <h4>
+    Items Ordered
+  </h4>
+  <div className="order-items">
+    {order.items.map((item, index) => (
+      <div key={index} className="order-item">
+        <img src={item.image} alt={item.name} />
+        <div className="item-details">
+          <span className="item-name">{item.name}</span>
+          <span className="item-price">
+            ₱{item.price.toLocaleString()} × {item.quantity}
+          </span>
+        </div>
+        <div className="item-subtotal">
+          ₱{(item.price * item.quantity).toLocaleString()}
+        </div>
+      </div>
+    ))}
+  </div>
+
+  
+  {order.status === "shipped" && (
+    <div className="confirm-receipt-wrapper">
+      <button
+        className="btn-order-received"
+        onClick={() => markAsCompleted(order.id)}
+      >
+        Order Received
+      </button>
+      <p className="receipt-hint">
+        Tap this once you've received and checked your items
+      </p>
+    </div>
+  )}
+
+
+  {order.status === "completed" && (
+  <div className="completed-wrapper">
+    <div className="completed-banner">
+      <FaCheckCircle className="check-icon" />
+      <span className="checkmark-text"></span>
+      <span className="completed-message">
+        Order completed! Thank you for shopping with us
+      </span>
+    </div>
+  </div>
+)}
+</div>
                       </div>
                     )}
                   </div>

@@ -1,7 +1,4 @@
-/* ============================================
-   MY ORDERS - iOS 16/17/18 INSPIRED DESIGN
-   GreenieCart - Apple Human Interface Guidelines
-   ============================================ */
+
 
 :root {
   /* iOS Colors */
@@ -793,4 +790,140 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.25);
+}
+
+
+.order-header-right::after {
+  content: attr(data-status);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: 12px;
+  margin-left: 8px;
+}
+
+.order-card {
+  position: relative;
+}
+
+.order-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Status colors */
+.order-header-right::after {
+  background: #f2f2f7;
+  color: #8e8e93;
+}
+
+[data-status="paid"]::after,
+[data-status="processing"]::after {
+  background: #fff4e6;
+  color: #ff9500;
+}
+
+[data-status="shipped"]::after {
+  background: #e6f7ff;
+  color: #007aff;
+}
+
+[data-status="completed"]::after {
+  background: #e6f7e6;
+  color: #28a745;
+}
+
+
+/* Confirm Order Received Button */
+.confirm-receipt-wrapper {
+  margin-top: 28px;
+  padding: 24px;
+  background: linear-gradient(135deg, #f0fff4, #e6fffa);
+  border: 2px dashed #34c759;
+  border-radius: 20px;
+  text-align: center;
+}
+
+.btn-order-received {
+  background: #34c759;
+  color: white;
+  border: none;
+  padding: 16px 40px;
+  border-radius: 18px;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(52, 199, 89, 0.3);
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-order-received:hover {
+  background: #2fb350;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(52, 199, 89, 0.4);
+}
+
+.btn-order-received:active {
+  transform: translateY(0);
+}
+
+.receipt-hint {
+  margin-top: 12px;
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 0;
+}
+
+
+.completed-wrapper {
+  margin-top: 16px;
+  padding: 0 16px;
+}
+
+.completed-banner {
+  background-color: #e6f7ee;
+  border: 2px solid #28a745;
+  border-radius: 12px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #28a745;
+  font-weight: 600;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.check-icon {
+  font-size: 1.4rem;
+}
+
+.checkmark-text {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+
+
+
+.completed-text {
+  color: #34c759;
+  font-weight: 600;
+  font-size: 16px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.completed-text::before {
+  content: "Checkmark";
+  font-size: 20px;
 }

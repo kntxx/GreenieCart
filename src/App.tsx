@@ -9,6 +9,9 @@ import EditProduct from "./components/EditProduct";
 import Cart from "./components/Cart";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Chatbot from "./components/Chatbot";
+import OtpReceiver from "./components/OtpReceiver";
+import OrdersReceived from "./components/OrdersReceived";
+
 
 function App() {
   return (
@@ -32,6 +35,8 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route path="/otp-receiver" element={<OtpReceiver />} />
         <Route
           path="/register"
           element={
@@ -63,6 +68,14 @@ function App() {
           element={
             <ProtectedRoute requireAuth={true}>
               <MyOrder />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/orders-received"
+          element={
+            <ProtectedRoute requireAuth={true}>
+              <OrdersReceived />
             </ProtectedRoute>
           }
         />

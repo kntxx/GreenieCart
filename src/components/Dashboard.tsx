@@ -320,25 +320,34 @@ const Dashboard: React.FC = () => {
               </li>
 
               {ordersDropdownOpen && (
-                <ul className="dropdown">
-                  <li
-                    onClick={() => {
-                      navigate("/cart");
-                      closeSidebar();
-                    }}
-                  >
-                    Your Cart
-                  </li>
-                  <li
-                    onClick={() => {
-                      navigate("/myorders");
-                      closeSidebar();
-                    }}
-                  >
-                    Your Orders
-                  </li>
-                </ul>
-              )}
+  <ul className="dropdown">
+    <li
+      onClick={() => {
+        navigate("/cart");
+        closeSidebar();
+      }}
+    >
+      Your Cart
+    </li>
+    <li
+      onClick={() => {
+        navigate("/myorders");
+        closeSidebar();
+      }}
+    >
+      Your Orders
+    </li>
+    <li
+      onClick={() => {
+        navigate("/orders-received");  
+        closeSidebar();
+      }}
+      style={{  }}
+    >
+      Orders Received
+    </li>
+  </ul>
+)}
               <li
                 className="profile"
                 onClick={() => {
@@ -368,8 +377,8 @@ const Dashboard: React.FC = () => {
               <FaBars />
             </span>
             <h2>
-              WELCOME TO GREENIECART BY{" "}
-              <span style={{ color: "#FFA500" }}>JAMAIAH SHANE CABIGAS</span>
+              WELCOME TO GREENIECART {" "}
+             {/*<span style={{ color: "#FFA500" }}>JAMAIAH SHANE CABIGAS</span> */}
             </h2>
             <div className="search-notifications">
               <button
