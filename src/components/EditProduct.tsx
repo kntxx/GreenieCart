@@ -65,7 +65,7 @@ const EditProduct: React.FC = () => {
   const closeSidebar = () => setSidebarOpen(false);
   const toggleOrdersDropdown = () => setOrdersDropdownOpen(!ordersDropdownOpen);
 
-  // Show popup helper
+  
   const showPopup = (
     type: PopupState["type"],
     message: string,
@@ -79,7 +79,7 @@ const EditProduct: React.FC = () => {
     setPopup({ ...popup, show: false });
   };
 
-  // Sign out handler with confirmation
+ 
   const handleSignOut = () => {
     showPopup(
       "confirm",
@@ -96,7 +96,7 @@ const EditProduct: React.FC = () => {
     );
   };
 
-  // Fetch product data
+
   useEffect(() => {
     const fetchProduct = async () => {
       if (!productId) {
@@ -118,7 +118,6 @@ const EditProduct: React.FC = () => {
         const data = productSnap.data();
         const user = auth.currentUser;
 
-        // Check if user owns this product
         if (!user || data.createdBy !== user.uid) {
           setError("You don't have permission to edit this product.");
           setLoading(false);
@@ -254,7 +253,7 @@ const EditProduct: React.FC = () => {
 
   return (
     <div className="dashboard">
-      {/* Popup Modal */}
+
       {popup.show && (
         <div className="popup-overlay" onClick={closePopup}>
           <div className="popup-modal" onClick={(e) => e.stopPropagation()}>
@@ -305,7 +304,21 @@ const EditProduct: React.FC = () => {
 
       {/* Sidebar */}
       <aside className={`sidebar ${sidebarOpen ? "open" : "closed"}`}>
-        <h2 className="sidebar-logo">GreenieCart</h2>
+         <div 
+  className="sidebar-logo"
+  onClick={() => {
+    navigate("/home");
+    closeSidebar();  
+  }}
+  style={{ cursor: "pointer" }} 
+>
+  <img 
+    src="/logo.jpg" 
+    alt="GreenieCart Logo" 
+    className="sidebar-logo-img"
+  />
+  <span className="sidebar-logo-text">GreenieCart</span>
+</div>
         <IconContext.Provider value={{ style: { marginRight: "10px" } }}>
           <nav>
             <ul>

@@ -1,6 +1,6 @@
-/* ---------- iOS 16/17/18 Design System ---------- */
+
 :root {
-  /* iOS Color Palette */
+  
   --ios-green: #34c759;
   --ios-green-dark: #248a3d;
   --ios-mint: #e9fdf1;
@@ -13,24 +13,23 @@
   --ios-separator: rgba(60, 60, 67, 0.12);
   --ios-overlay: rgba(0, 0, 0, 0.4);
 
-  /* iOS Shadows */
   --ios-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
   --ios-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
   --ios-shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.12);
   --ios-shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.15);
 
-  /* iOS Transitions */
+ 
   --ios-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
   --ios-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
-  /* iOS Border Radius */
+
   --ios-radius-sm: 10px;
   --ios-radius-md: 14px;
   --ios-radius-lg: 18px;
   --ios-radius-xl: 22px;
 }
 
-/* Reset */
+
 * {
   box-sizing: border-box;
 }
@@ -50,7 +49,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ---------- iOS Layout ---------- */
+
 .dashboard {
   display: flex;
   width: 100vw;
@@ -58,7 +57,7 @@ body {
   background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
 }
 
-/* ---------- iOS Frosted Sidebar ---------- */
+
 .sidebar {
   width: 250px;
   background: rgba(255, 255, 255, 0.75);
@@ -374,7 +373,6 @@ body {
   border: 1px solid rgba(255, 59, 48, 0.2);
 }
 
-/* ---------- iOS Image Upload ---------- */
 .image-upload-group {
   display: flex;
   flex-direction: column;
@@ -474,7 +472,7 @@ body {
   box-shadow: var(--ios-shadow-sm);
 }
 
-/* ---------- iOS Form Actions ---------- */
+
 .form-actions {
   display: flex;
   gap: 14px;
@@ -490,6 +488,7 @@ body {
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
+  justify-content: center;
   transition: all 0.2s var(--ios-transition);
 }
 

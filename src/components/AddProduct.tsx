@@ -234,7 +234,21 @@ const AddProduct: React.FC = () => {
 
       {/* Sidebar */}
       <aside className={`sidebar ${sidebarOpen ? "open" : "closed"}`}>
-        <h2 className="sidebar-logo">GreenieCart</h2>
+         <div 
+  className="sidebar-logo"
+  onClick={() => {
+    navigate("/home");
+    closeSidebar();  
+  }}
+  style={{ cursor: "pointer" }} 
+>
+  <img 
+    src="/logo.jpg" 
+    alt="GreenieCart Logo" 
+    className="sidebar-logo-img"
+  />
+  <span className="sidebar-logo-text">GreenieCart</span>
+</div>
         <IconContext.Provider value={{ style: { marginRight: "10px" } }}>
           <nav>
             <ul>

@@ -27,7 +27,7 @@ import { signOut } from "firebase/auth";
 import { db, auth } from "./firebase";
 import "../assets/MyOrder.css";
 
-// Popup types
+
 interface PopupState {
   show: boolean;
   type: "success" | "error" | "info" | "confirm";
@@ -179,7 +179,7 @@ useEffect(() => {
     }
   };
 
-    // MARK AS COMPLETED - Para sa buyer
+  
   const markAsCompleted = async (orderId: string) => {
     showPopup(
       "confirm",
@@ -204,7 +204,7 @@ useEffect(() => {
 
   return (
     <div className="dashboard">
-      {/* Popup Modal */}
+   
       {popup.show && (
         <div className="popup-overlay" onClick={closePopup}>
           <div className="popup-modal" onClick={(e) => e.stopPropagation()}>
@@ -255,7 +255,21 @@ useEffect(() => {
 
       {/* Sidebar */}
       <aside className={`sidebar ${sidebarOpen ? "open" : "closed"}`}>
-        <h2 className="sidebar-logo">GreenieCart</h2>
+         <div 
+  className="sidebar-logo"
+  onClick={() => {
+    navigate("/home");
+    closeSidebar();  
+  }}
+  style={{ cursor: "pointer" }} 
+>
+  <img 
+    src="/logo.jpg" 
+    alt="GreenieCart Logo" 
+    className="sidebar-logo-img"
+  />
+  <span className="sidebar-logo-text">GreenieCart</span>
+</div>
         <IconContext.Provider value={{ style: { marginRight: "10px" } }}>
           <nav>
             <ul>
