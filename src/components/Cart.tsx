@@ -485,14 +485,33 @@ const Cart: React.FC = () => {
               <>
                 <table className="cart-table">
                   <thead>
+                    
                     <tr>
-                      <th></th>
+
+                    <th className="select-all-col">
+      <label className="select-all-label">
+        <input
+          type="checkbox"
+          className="select-all-checkbox"
+          checked={cartItems.length > 0 && selectedItems.size === cartItems.length}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedItems(new Set(cartItems.map(item => item.id)));
+            } else {
+              setSelectedItems(new Set());
+            }
+          }}
+        />
+        <span>All</span>
+      </label>
+    </th>
                       <th>Product</th>
                       <th>Price</th>
                       <th>Quantity</th>
                       <th>Subtotal</th>
                       <th>Action</th>
                     </tr>
+                    
                   </thead>
                   <tbody>
                     {cartItems.map((item) => (
@@ -527,6 +546,8 @@ const Cart: React.FC = () => {
                     ))}
                   </tbody>
                 </table>
+
+
 
                 <div className="cart-summary">
                   <h4>
@@ -588,11 +609,11 @@ const Cart: React.FC = () => {
                   <input type="text" name="address" value={deliveryDetails.address} onChange={handleDeliveryChange} placeholder="House/Unit No., Street, Barangay" />
                 </div>
                 <div className="form-row">
-                  <div className="form-group">
+                  <div className="form-groups">
                     <label>City *</label>
                     <input type="text" name="city" value={deliveryDetails.city} onChange={handleDeliveryChange} placeholder="City" />
                   </div>
-                  <div className="form-group">
+                  <div className="form-groups">
                     <label>Postal Code *</label>
                     <input type="text" name="postalCode" value={deliveryDetails.postalCode} onChange={handleDeliveryChange} placeholder="Postal Code" />
                   </div>
