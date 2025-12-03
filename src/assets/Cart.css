@@ -656,6 +656,7 @@ body {
   gap: 16px;
 }
 
+
 /* iOS Payment Options */
 .payment-options {
   display: flex;
@@ -722,6 +723,17 @@ body {
   padding: 20px;
   margin-bottom: 24px;
   animation: slideDown 0.3s ease;
+}
+
+
+@media (max-width: 480px) {
+  .payment-details-form {
+    padding: 1px;
+    border-radius: 12px;
+    background: none;
+    border: none;
+  }
+  
 }
 
 @keyframes slideDown {
@@ -961,6 +973,9 @@ body {
 .menu-icon {
   display: none;
 }
+
+
+
 
 /* ---------- iOS Responsive ---------- */
 @media (max-width: 768px) {
